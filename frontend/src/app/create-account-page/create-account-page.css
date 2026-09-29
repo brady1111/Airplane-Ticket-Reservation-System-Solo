@@ -12,9 +12,44 @@ main {
     text-align: center;
 }
 
-create-account-form {
+.create-account-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+    gap: 5px;
+}
+
+.create-account-form label {
+    width: 300px;
+    text-align: left;
+    margin-bottom: -3px;
+}
+
+.create-account-form input {
+    width: 300px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.create-account-form button {
+    width: 300px;
+    padding: 12px;
+    margin-top: 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+main p {
+    margin-top: 5px;
+}
+
+main a {
+    color: blue;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+main a:hover {
+    text-decoration: underline;
 }
