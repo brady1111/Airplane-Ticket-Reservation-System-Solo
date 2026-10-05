@@ -1,0 +1,60 @@
+.login-page-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+main {
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 5px;
+}
+
+.login-form label {
+    width: 300px;
+    text-align: left;
+    margin-bottom: -3px;
+}
+
+.login-form input {
+    width: 300px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.login-form button {
+    width: 300px;
+    padding: 12px;
+    margin-top: 15px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+main p {
+    margin-top: 5px;
+}
+
+main a {
+    color: blue;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
