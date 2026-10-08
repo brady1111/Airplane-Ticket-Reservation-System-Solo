@@ -1,0 +1,86 @@
+.customer-home-page-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+main {
+    text-align: center;
+}
+
+.account-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.account-buttons p {
+    margin-top: 10px;
+}
+
+.account-buttons a {
+    text-decoration: none;
+}
+
+.account-buttons a:hover {
+    text-decoration: underline;
+}
+
+.search-flight {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-flight label {
+    width: 250px;
+    text-align: left;
+}
+
+.search-flight input {
+    width: 250px;
+    padding: 8px;
+}
+
+.search-flight button {
+    margin-top: 15px;
+    padding: 10px 20px;
+}
+
+.available-flights {
+    margin-top: 30px;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.flight-details-popup {
+    width: 350px;
+    padding: 20px;
+    margin: 20px auto;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: left;
+}
+
+.flight-details-popup h2 {
+    text-align: center;
+}
+
+.flight-details-buttons {
+    display: block;
+    margin: 20px auto 0;
+    padding: 8px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
