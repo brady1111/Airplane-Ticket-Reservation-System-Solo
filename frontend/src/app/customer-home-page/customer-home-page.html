@@ -1,23 +1,67 @@
 <div class="customer-home-page-container">
-    <header>
+
+    <header class="navbar">
         <h1>Airplane Ticket Reservation</h1>
+
+        <nav>
+            <a routerLink="/customer-home-page">Home</a>
+            <a routerLink="/my-reservations">My Reservations</a>
+            <button type="button" class="logout-button">Log Out</button>
+        </nav>
     </header>
 
-    <main>
-        <h2>Find a Flight</h2>
+    <main class="page-content">
 
-        <div class="search-flight">
-            <label for="departure">Departure Airport:</label>
-            <input type="text" id="departure" name="departure" placeholder="Search for an airport">
+        <section class="content-card">
+            <h2>Find a Flight</h2>
 
-            <label for="arrival">Arrival Airport:</label>
-            <input type="text" id="arrival" name="arrival" placeholder="Search for an airport">
+            <form class="search-flight">
 
-            <label for="date">Departure Date:</label>
-            <input type="date" id="date" name="date">
+                <div class="form-group">
+                    <label for="departure">Departure Airport</label>
+                    <input
+                        type="text"
+                        id="departure"
+                        name="departure"
+                        placeholder="Enter departure airport"
+                    >
+                </div>
 
-            <button>Search Flights</button>
-        </div>
+                <div class="form-group">
+                    <label for="arrival">Arrival Airport</label>
+                    <input
+                        type="text"
+                        id="arrival"
+                        name="arrival"
+                        placeholder="Enter arrival airport"
+                    >
+                </div>
 
+                <div class="form-group">
+                    <label for="date">Departure Date</label>
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="passengers">Number of Passengers</label>
+                    <select id="passengers" name="passengers">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <button type="button" class="primary-button">
+                    Search Flights
+                </button>
+
+            </form>
+        </section>
     </main>
 </div>
