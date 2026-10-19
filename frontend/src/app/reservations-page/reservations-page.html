@@ -1,0 +1,240 @@
+<div class="reservations-page-container">
+
+    <header class="navbar">
+        <h1>Airplane Ticket Reservation</h1>
+
+        <nav>
+            <a routerLink="/customer-home-page">Return to Home</a>
+            <button type="button" class="logout-button">Log Out</button>
+        </nav>
+    </header>
+
+    <main class="page-content">
+
+        <section class="content-card">
+            <h2>My Reservations</h2>
+            <p class="page-description">View and manage your upcoming flight reservations.</p>
+
+            <div class="reservation-card">
+                <div class="reservation-summary">
+                    <div>
+                        <h3>Delta Air Lines - DL1234</h3>
+                        <p><strong>Departure:</strong> Lexington, KY</p>
+                        <p><strong>Arrival:</strong> Cincinnati, OH</p>
+                        <p><strong>Date:</strong> October 25, 2026</p>
+                        <p><strong>Seat:</strong> E1</p>
+                    </div>
+
+                    <button type="button" class="view-ticket-button">View Ticket</button>
+                </div>
+
+                <div class="reservation-actions">
+                    <button type="button">Edit Reservation</button>
+                    <button type="button">Cancel Reservation</button>
+                </div>
+
+            </div>
+
+            <div class="reservation-card">
+                <div class="reservation-summary">
+                    <div>
+                        <h3>American Airlines - AA2567</h3>
+                        <p><strong>Departure:</strong> Lexington, KY</p>
+                        <p><strong>Arrival:</strong> Atlanta, GA</p>
+                        <p><strong>Date:</strong> November 12, 2026</p>
+                        <p><strong>Seat:</strong> A2</p>
+                    </div>
+
+                    <button type="button" class="view-ticket-button">View Ticket</button>
+                </div>
+
+                <div class="reservation-actions">
+                    <button type="button">Edit Reservation</button>
+                    <button type="button">Cancel Reservation</button>
+                </div>
+
+            </div>
+        </section>
+
+        <section class="ticket-popup">
+            <h2>Electronic Flight Ticket</h2>
+            <p class="ticket-status">Reservation Confirmed</p>
+
+            <div class="ticket-number">
+                <p><strong>Ticket Number:</strong> TKT-20261025-001</p>
+                <p><strong>Confirmation Code:</strong> DL8K2P</p>
+            </div>
+
+            <div class="ticket-section">
+                <h3>Flight Information</h3>
+                <p><strong>Airline:</strong> Delta Air Lines</p>
+                <p><strong>Flight Number:</strong> DL1234</p>
+                <p><strong>Departure Airport:</strong> Lexington, KY</p>
+                <p><strong>Arrival Airport:</strong> Cincinnati, OH</p>
+                <p><strong>Departure Date:</strong> October 25, 2026</p>
+                <p><strong>Departure Time:</strong> 8:15 AM</p>
+                <p><strong>Arrival Time:</strong> 9:15 AM</p>
+                <p><strong>Flight Duration:</strong> 1 hour</p>
+            </div>
+
+            <div class="ticket-section">
+                <h3>Passenger Information</h3>
+                <p><strong>Passenger Name:</strong> Brady Smallwood</p>
+                <p><strong>Ticket Number:</strong> TKT-20261025-001</p>
+                <p><strong>Seat Number:</strong> E1</p>
+                <p><strong>Number of Passengers:</strong> 1</p>
+            </div>
+
+            <div class="ticket-total">
+                <p><strong>Total Paid:</strong> $129.00</p>
+            </div>
+
+            <div class="ticket-buttons">
+                <button type="button">Close Ticket</button>
+            </div>
+
+        </section>
+
+        <section class="cancel-popup">
+            <h2>Cancel Reservation?</h2>
+            <p>Are you sure you want to cancel your reservation for Delta Air Lines flight DL1234?</p>
+            <p>This action may not be reversible.</p>
+
+            <div class="ticket-buttons">
+                <button type="button">Keep Reservation</button>
+                <button type="button">Confirm Cancellation</button>
+            </div>
+        </section>
+
+        
+    <section class="edit-reservation-popup">
+        <h2>Edit Reservation</h2>
+
+        <p class="edit-description">Update your flight information and select a new seat.</p>
+
+            <div class="edit-section">
+                <h3>Search for a New Flight</h3>
+
+                <form class="edit-flight-form">
+                    <div class="edit-form-group">
+                        <label for="edit-departure">Departure Airport</label>
+                        <input type="text" id="edit-departure" name="edit-departure" placeholder="Enter departure airport">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-arrival">Arrival Airport</label>
+                        <input type="text" id="edit-arrival" name="edit-arrival" placeholder="Enter arrival airport">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-date">Departure Date</label>
+                        <input type="date" id="edit-date" name="edit-date">
+                    </div>
+
+                    <div class="edit-form-group">
+                        <label for="edit-passengers">Number of Passengers</label>
+                        <select id="edit-passengers" name="edit-passengers">
+                            <option value="1">1 Passenger</option>
+                            <option value="2">2 Passengers</option>
+                            <option value="3">3 Passengers</option>
+                            <option value="4">4 Passengers</option>
+                            <option value="5">5 Passengers</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="edit-primary-button">
+                        Search Flights
+                    </button>
+                </form>
+            </div>
+
+            <div class="edit-section">
+                <h3>Available Flights</h3>
+
+                <div class="edit-flight-option">
+                    <div>
+                        <h4>Delta Air Lines - DL5678</h4>
+                        <p><strong>Departure:</strong> 9:30 AM - Lexington, KY</p>
+                        <p><strong>Arrival:</strong> 10:30 AM - Cincinnati, OH</p>
+                        <p><strong>Duration:</strong> 1 hour</p>
+                        <p><strong>Price:</strong> $139.00</p>
+                    </div>
+
+                    <button type="button">Select Flight</button>
+                </div>
+
+                <div class="edit-flight-option">
+                    <div>
+                        <h4>American Airlines - AA3456</h4>
+                        <p><strong>Departure:</strong> 12:00 PM - Lexington, KY</p>
+                        <p><strong>Arrival:</strong> 1:15 PM - Cincinnati, OH</p>
+                        <p><strong>Duration:</strong> 1 hour 15 minutes</p>
+                        <p><strong>Price:</strong> $149.00</p>
+                    </div>
+
+                    <button type="button">Select Flight</button>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <h3>Select Your New Seat</h3>
+                <p class="edit-description">
+                    Select an available seat for your updated flight.
+                </p>
+                <div class="edit-seat-map">
+                    <p class="edit-cabin-label">FRONT OF AIRCRAFT</p>
+
+                    <div class="edit-seat-row">
+                        <button type="button" class="edit-seat available">A1</button>
+                        <button type="button" class="edit-seat available">B1</button>
+                        <button type="button" class="edit-seat occupied">C1</button>
+                        <span class="edit-aisle"></span>
+                        <button type="button" class="edit-seat available">D1</button>
+                        <button type="button" class="edit-seat selected">E1</button>
+                        <button type="button" class="edit-seat occupied">F1</button>
+                    </div>
+
+                    <div class="edit-seat-row">
+                        <button type="button" class="edit-seat occupied">A2</button>
+                        <button type="button" class="edit-seat available">B2</button>
+                        <button type="button" class="edit-seat available">C2</button>
+                        <span class="edit-aisle"></span>
+                        <button type="button" class="edit-seat available">D2</button>
+                        <button type="button" class="edit-seat available">E2</button>
+                        <button type="button" class="edit-seat available">F2</button>
+                    </div>
+
+                    <p class="edit-cabin-label">REAR OF AIRCRAFT</p>
+                </div>
+            </div>
+
+            <div class="edit-section">
+                <h3>Review Updated Reservation</h3>
+
+                <div class="edit-confirmation-details">
+                    <p><strong>Airline:</strong> Delta Air Lines</p>
+                    <p><strong>Flight Number:</strong> DL5678</p>
+                    <p><strong>Departure:</strong> 9:30 AM - Lexington, KY</p>
+                    <p><strong>Arrival:</strong> 10:30 AM - Cincinnati, OH</p>
+                    <p><strong>Departure Date:</strong> November 15, 2026</p>
+                    <p><strong>Passenger Count:</strong> 1</p>
+                    <p><strong>New Seat:</strong> E1</p>
+                    <p><strong>Updated Total:</strong> $139.00</p>
+                </div>
+
+                <p class="edit-description">Please review your updated flight information before confirming.</p>
+
+                <div class="edit-action-buttons">
+                    <button type="button">Cancel</button>
+                    <button type="button">Confirm Reservation</button>
+                </div>
+            </div>
+
+            <div class="edit-success-message">
+                <h3>Reservation Updated Successfully!</h3>
+                <p>Your reservation has been saved with the updated flight details.</p>
+                <button type="button">Return to Home</button>
+            </div>
+    </section>
+    </main>
+</div>
