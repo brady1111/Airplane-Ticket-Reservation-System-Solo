@@ -54,3 +54,13 @@ main a:hover {
     text-decoration: underline;
 }
 
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin: 2px 0 8px;
+    min-height: 0;
+}
+
+.error-message:empty {
+    display: none;
+}

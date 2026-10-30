@@ -6,18 +6,32 @@
     <main>
         <h2>Log In</h2>
 
-        <form class="login-form">
-
+        <form class="login-form" (submit)="submitLogin($event)">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username">
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter your username"
+                (input)="username = $any($event.target).value; errorMessage.set('')"
+            >
+            <p class="error-message">{{ usernameError }}</p>
 
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password">
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                (input)="password = $any($event.target).value; errorMessage.set('')"
+            >
+            <p class="error-message">{{ passwordError }}</p>
 
-            <button type="submit" routerLink="/customer-home-page">Log In</button>
+            <p class="error-message">{{ errorMessage() }}</p>
+
+            <button type="submit">Log In</button>
         </form>
 
-        <p>Don't have an account? <a routerLink="/create-account-page">Sign Up</a></p>
-
+        <p>Don't have an account? <a routerLink="/create-account">Sign Up</a></p>
     </main>
 </div>

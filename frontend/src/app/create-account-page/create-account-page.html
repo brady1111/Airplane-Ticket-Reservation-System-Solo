@@ -6,25 +6,81 @@
     <main>
         <h2>Create an Account</h2>
 
-        <form class="create-account-form">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" name="name" placeholder="Enter your full name">
+        <form class="create-account-form" (submit)="submitRegistration($event)">
+            <label for="first-name">First Name:</label>
+            <input
+                type="text"
+                id="first-name"
+                name="first-name"
+                placeholder="Enter your first name"
+                (input)="firstName = $any($event.target).value"
+            >
+            <p class="error-message">{{ firstNameError }}</p>
+
+            <label for="last-name">Last Name:</label>
+            <input
+                type="text"
+                id="last-name"
+                name="last-name"
+                placeholder="Enter your last name"
+                (input)="lastName = $any($event.target).value"
+            >
+            <p class="error-message">{{ lastNameError }}</p>
 
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Enter a username">
+            <input
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Enter a username"
+                (input)="username = $any($event.target).value"
+            >
+            <p class="error-message">{{ usernameError }}</p>
 
             <label for="DoB">Date of Birth:</label>
-            <input type="date" id="DoB" name="DoB">
+            <input
+                type="date"
+                id="DoB"
+                name="DoB"
+                (input)="dateOfBirth = $any($event.target).value"
+            >
+            <p class="error-message">{{ dateOfBirthError }}</p>
 
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter a password">
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter a password"
+                (input)="password = $any($event.target).value"
+            >
+            
+            <div class="password-hint">
+                <span>Password requirements:</span>
+                <ul>
+                    <li>At least 8 characters</li>
+                    <li>One uppercase and one lowercase letter</li>
+                    <li>One number and one special character</li>
+                </ul>
+            </div>
+
+            <p class="error-message">{{ passwordError }}</p>
 
             <label for="confirm-password">Confirm Password:</label>
-            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password">
-            <button type="submit" routerLink="/login">Create Account</button>
+            <input
+                type="password"
+                id="confirm-password"
+                name="confirm-password"
+                placeholder="Confirm your password"
+                (input)="confirmPassword = $any($event.target).value"
+            >
+            <p class="error-message">{{ confirmPasswordError }}</p> 
+
+            <p class="error-message">{{ errorMessage() }}</p>
+
+            <button type="submit">Create Account</button>
         </form>
 
         <p>Already have an account? <a routerLink="/login">Log In</a></p>
-
     </main>
 </div>
