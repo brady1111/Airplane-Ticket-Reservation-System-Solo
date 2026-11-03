@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from .serializers.customer_registration import CustomerRegistrationSerializer
 from .serializers.customer_login import CustomerLoginSerializer
 
+from django.middleware.csrf import rotate_token
+
 from .models import Customer
 
 #original API connection endpoint
@@ -33,6 +35,45 @@ def customer_count(request):
     })
 #end of customer_count function
 
+#P1.1 - Create an Account
+#API endpoint to check if a customer is logged in
+@api_view(['GET'])
+def check_login_status(request):
+    #get the customer's ID from the session
+    customer_id = request.session.get('customer_id')
+
+    #check if the customer has an active session (is logged in)
+    if not customer_id:
+        return Response({
+            'authenticated': False,
+            'message': 'Customer is not logged in.'
+        },
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    #find the customer associated with the session ID
+    customer = Customer.objects.filter(customer_id=customer_id).first()
+
+    #check if the customer exists
+    if customer is None:
+        request.session.flush()  #clear the session if the customer does not exist
+        return Response({   
+            'authenticated': False,
+            'message': 'Customer not found. Session cleared.'
+        },
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+
+    #return the customer's details if they are logged in
+    return Response({
+        'authenticated': True,
+        'customer_id': customer.customer_id,
+        'username': customer.username
+    },
+        status=status.HTTP_200_OK)
+#end of check_login_status function
+
+#P1.1 - Create an Account
 #API endpoint to register a new customer
 @api_view(['POST'])
 def register_customer(request):
@@ -59,6 +100,7 @@ def register_customer(request):
     )
 #end of register_customer function
 
+#P1.2 - Log In
 #API endpoint for customer login
 @api_view(['POST'])
 def customer_login(request):
@@ -68,6 +110,13 @@ def customer_login(request):
     if serializer.is_valid():
         #retrieve the customer instance from the serializer after successful validation
         customer = serializer.customer
+
+        #create a new session
+        request.session.cycle_key()
+        #store the customer's ID in the session to keep them logged in
+        request.session['customer_id'] = customer.customer_id
+        #rotate the CSRF token to prevent CSRF attacks
+        rotate_token(request)
 
         #return a response with the customer's details after successful login
         return Response(
@@ -86,3 +135,15 @@ def customer_login(request):
         status=status.HTTP_400_BAD_REQUEST
     )
 #end of customer_login function
+
+#P1.3 - Log Out
+#API endpoint to log out a customer
+@api_view(['POST'])
+def customer_logout(request):
+    #clear the customer's session
+    request.session.flush()
+
+    return Response(
+        {'message': 'Customer logged out successfully.'},
+        status=status.HTTP_200_OK
+    )

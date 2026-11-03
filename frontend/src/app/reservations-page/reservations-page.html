@@ -5,15 +5,64 @@
 
         <nav>
             <a routerLink="/customer-home-page">Return to Home</a>
-            <button type="button" class="logout-button">Log Out</button>
+            <button type="button" class="logout-button" (click)="openLogoutPopup()">Log Out</button>
         </nav>
     </header>
 
     <main class="page-content">
-
         <section class="content-card">
             <h2>My Reservations</h2>
-            <p class="page-description">View and manage your upcoming flight reservations.</p>
-    </section>
+
+            @if (loadingReservations) {
+                <p>Loading reservations...</p>
+            }
+            @else if (reservationError) {
+                <p class="error-message">{{ reservationError }}</p>
+            }
+            @else if (reservations.length === 0) {
+                <p>You currently have no reservations.</p>
+            }
+            @else {
+                <div class="reservations-list">
+                    @for (reservation of reservations; track reservation.reservation_id) {
+                        <div class="reservation-card">
+                            <h3>{{ reservation.airline_name }}</h3>
+
+                            <p><strong>Flight:</strong> {{ reservation.flight_number }}</p>
+                            <p><strong>From:</strong> {{ reservation.departure_airport }}</p>
+                            <p><strong>To:</strong> {{ reservation.arrival_airport }}</p>
+                            <p><strong>Departure:</strong> {{ reservation.departure_date }}</p>
+                            <p><strong>Booking Reference:</strong> {{ reservation.booking_reference }}</p>
+                        </div>
+                    }
+                </div>
+            }
+        </section>
+
+        <!-- Logout confirmation popup -->
+        @if (showLogoutPopup) {
+            <div class="logout-overlay">
+                <div class="logout-popup">
+                <h2>Goodbye!</h2>
+
+                <p>You have chosen to log out of your account.</p>
+                <p>Thank you for using Airplane Ticket Reservation!</p>
+
+                <div class="logout-popup-buttons">
+                    <button type="button"
+                            class="logout-confirm-button"
+                            (click)="confirmLogout()">
+                    OK
+                    </button>
+
+                    <button type="button"
+                            class="logout-return-button"
+                            (click)="closeLogoutPopup()">
+                    Return
+                    </button>
+                </div>
+                </div>
+            </div>
+        }
     </main>
 </div>

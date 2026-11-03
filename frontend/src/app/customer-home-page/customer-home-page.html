@@ -5,7 +5,9 @@
 
         <nav>
             <a routerLink="/reservations-page">My Reservations</a>
-            <button type="button" class="logout-button">Log Out</button>
+            <button type="button" class="logout-button" (click)="openLogoutPopup()">
+                Log Out
+            </button>
         </nav>
     </header>
 
@@ -63,22 +65,25 @@
             </form>
         </section>
 
-        <!-- Logout Popup 
-        <div class="logout-popup">
-            <h2>Goodbye!</h2>
+        <!-- Logout Popup -->
+        @if (showLogoutPopup()) {
+            <div class="logout-overlay">
+                <div class="logout-popup">
+                    <h2>Goodbye!</h2>
 
-            <p>You have chosen to log out of your account.</p>
-            <p>Thank you for using Airplane Ticket Reservation!</p>
+                    <p>You have chosen to log out of your account.</p>
+                    <p>Thank you for using Airplane Ticket Reservation!</p>
 
-            <div class="logout-popup-buttons">
-                <button type="button" class="logout-confirm-button">
-                    OK
-                </button>
-
-                <button type="button" class="logout-return-button">
-                    Return
-                </button>
+                    <div class="logout-popup-buttons">
+                        <button type="button" class="logout-confirm-button" (click)="confirmLogout()">
+                            OK
+                        </button>
+                        <button type="button" class="logout-return-button" (click)="closeLogoutPopup()">
+                            Return
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div> -->
+        }
     </main>
 </div>

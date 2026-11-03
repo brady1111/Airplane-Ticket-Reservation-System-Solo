@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'reservations',
+    'flights',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,17 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
 ]
+
+# Allow Angular to send cookies with requests
+CORS_ALLOW_CREDENTIALS = True
+
+# Session cookie settings for local development
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = False
+
+# Allow Angular to make CSRF-protected requests
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:4200',
+]
+

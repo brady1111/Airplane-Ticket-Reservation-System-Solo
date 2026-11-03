@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import reservation_count
+from .views import customer_reservations
 
 urlpatterns = [
-    path('count/', reservation_count, name='reservation-count'),
+    path('', customer_reservations, name='customer-reservations'),
 ]

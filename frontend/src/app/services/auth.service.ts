@@ -8,7 +8,7 @@ import { Observable } from 'rxjs'; //for handling asynchronous operations in Ang
 })
 export class AuthService {
   //base URL for the backend API
-  private apiUrl = 'http://127.0.0.1:8000/api';
+  private apiUrl = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -18,6 +18,16 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login/`, {
       username: username, 
       password: password
+    }, {
+      withCredentials: true //include credentials (cookies) in the request for session management
+    });
+  }
+
+  //method to check if a customer is logged in
+  checkLoginStatus(): Observable<any> {
+      //send a GET request to the backend API to check the login status of the customer
+      return this.http.get(`${this.apiUrl}/login-status/`, {
+      withCredentials: true //include credentials (cookies) in the request for session management
     });
   }
 
@@ -30,6 +40,14 @@ export class AuthService {
       firstName: firstName,
       lastName: lastName,
       dateOfBirth: dateOfBirth
+    });
+  }
+
+  //method for handling customer logout
+  logout(): Observable<any> {
+    //send a POST request to the backend API to log out the customer
+    return this.http.post(`${this.apiUrl}/logout/`, {}, {
+      withCredentials: true //include credentials (cookies) in the request for session management
     });
   }
 }
