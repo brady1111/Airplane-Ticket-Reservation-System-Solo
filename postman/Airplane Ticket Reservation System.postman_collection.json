@@ -1,0 +1,35 @@
+
+                "logout",
+                ""
+              ]
+            },
+            "description": "Description: Ends the customer's current session by clearing session data."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "testUsername",
+      "value": "postman_test_003",
+      "type": "string"
+    },
+    {
+      "key": "testPassword",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "wrongPassword",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
