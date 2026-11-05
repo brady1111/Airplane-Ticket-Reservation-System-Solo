@@ -79,7 +79,6 @@ def search_flights(request):
 
         #go through each flight offer returned by Duffel
         for offer in offers:
-
             #retrieve the first flight journey
             slices = offer.get('slices', [])
 
@@ -100,7 +99,7 @@ def search_flights(request):
 
             #create a simplified flight object
             flight = {
-                'offer_id': offer.get('id'),
+                'offer_id': offer.get('id'), #duffel offer ID for booking reference
                 'airline': offer.get('owner', {}).get('name'),
                 'flight_number': first_segment.get('marketing_carrier_flight_number'),
                 'origin': flight_slice.get('origin', {}).get('iata_code'),
@@ -110,7 +109,7 @@ def search_flights(request):
                 'duration': flight_slice.get('duration'),
                 'price': offer.get('total_amount'),
                 'currency': offer.get('total_currency'),
-                'stops': len(segments) - 1
+                'stops': len(segments) - 1 #number of stops (0 for direct flights, 1 for one stop, etc.)
             }
 
             #add the flight to the list

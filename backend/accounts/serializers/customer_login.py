@@ -29,3 +29,4 @@ class CustomerLoginSerializer(serializers.Serializer):
 
         #return the validated data
         return data
+    #end of validate function

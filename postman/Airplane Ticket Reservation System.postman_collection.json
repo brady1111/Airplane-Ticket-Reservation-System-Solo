@@ -1,4 +1,570 @@
-
+{
+  "info": {
+    "_postman_id": "027d88a6-f215-4822-a6c9-6cf91b0d32eb",
+    "name": "Airplane Ticket Reservation System",
+    "description": "Postman API tests for the Airplane Ticket Reservation System (Django REST Framework, PostgreSQL, and Duffel flight search). Set the collection variables testUsername, testPassword, and wrongPassword locally before running account tests. Do not commit actual credentials. Run valid registration once per username, then duplicate registration, valid login, authenticated status, logout, and unauthenticated status in that order. The underage and mismatch requests should return 400.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59439134",
+    "_collection_link": "https://go.postman.co/collection/59439134-027d88a6-f215-4822-a6c9-6cf91b0d32eb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Flights",
+      "item": [
+        {
+          "name": "Search Flights - Valid Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//verify the flight search request was successful\npm.test(\"Flight search returns 200 OK\", function () {\n    pm.response.to.have.status(200);\n});\n\n//verify Django returns a flights array\npm.test(\"Response contains flights array\", function () {\n    const response = pm.response.json();\n    pm.expect(response.flights).to.be.an(\"array\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"departure_airport\": \"LEX\",\n    \"arrival_airport\": \"ATL\",\n    \"departure_date\": \"2026-12-15\",\n    \"passengers\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/flights/search/",
+              "path": [
+                "api",
+                "flights",
+                "search",
+                ""
+              ]
+            },
+            "description": "Endpoint: /api/flights/search/\n\nDescription:\n\nSearches for avaliable flights using the Duffel API. The backend accepts departure and arrival airport codes, a departure date, and the number of passengers. The backend sends the search parameters to Duffels and returns simplified flight information.\n\nRequired Parameters:\n\n1. departure_airport: Three letter IATA airport code\n    \n2. arrival_airport: Three letter IATA airport code\n    \n3. departure_date: Date in YYYY-MM-DD format\n    \n\nOptional Parameters:\n\npassengers: Number of passengers (defaults to 1)\n\nSuccessful Response: 200 OK\n\nMissing Required Parameters: 400 Bad Request"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Flights - Invalid Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Returns 400 Bad Request\", function () {\n    pm.response.to.have.status(400);\n});\n\npm.test(\"Response contains validation error\", function () {\n    const data = pm.response.json();\n    pm.expect(data).to.have.property(\"error\");\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"departure_airport\": \"LEX\",\n    \"arrival_airport\": \"ATL\",\n    \"passengers\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/flights/search/",
+              "path": [
+                "api",
+                "flights",
+                "search",
+                ""
+              ]
+            },
+            "description": "Endpoint: /api/flights/search/\n\nDescription:\n\nSearches for avaliable flights using the Duffel API. The backend accepts departure and arrival airport codes, a departure date, and the number of passengers. The backend sends the search parameters to Duffels and returns simplified flight information.\n\nRequired Parameters:\n\n1. departure_airport: Three letter IATA airport code\n    \n2. arrival_airport: Three letter IATA airport code\n    \n3. departure_date: Date in YYYY-MM-DD format\n    \n\nOptional Parameters:\n\npassengers: Number of passengers (defaults to 1)\n\nSuccessful Response: 200 OK\n\nMissing Required Parameters: 400 Bad Request"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reservations",
+      "item": [
+        {
+          "name": "View Reservations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"View Reservations returns 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Reservations are returned as an array\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data).to.be.an(\"array\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reservations/",
+              "path": [
+                "api",
+                "reservations",
+                ""
+              ]
+            },
+            "description": "Description: Retrieves reservations associated with the authenticated customer. Customers must have an active session to access their reservation information."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "API Home",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API Home returns 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"API connection message is correct\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.message).to.eql(\r\n        \"Airplane Reservation API is working!\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/",
+              "path": [
+                "api",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that the Airplane Ticket Reservation System backend is responding to requests.\n\nParameters: NONE"
+          },
+          "response": []
+        },
+        {
+          "name": "API Health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"API Health returns 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"API status is ok\", function () {\r\n    const data = pm.response.json();\r\n    pm.expect(data.status).to.eql(\"ok\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health/",
+              "path": [
+                "api",
+                "health",
+                ""
+              ]
+            },
+            "description": "Description: Checks whether the Django REST API is running and responding successfully.\n\nParameters: NONE"
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Count",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Customer Count returns 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Customer count is a nonnegative number\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.customer_count).to.be.a(\"number\");\r\n    pm.expect(data.customer_count).to.be.at.least(0);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/customers/count/",
+              "path": [
+                "api",
+                "customers",
+                "count",
+                ""
+              ]
+            },
+            "description": "Description: Retrieves the total number of customer accounts stored in PostgreSQL.\n\nParameters: NONE"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Account - Valid Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//verify that the account was created\r\npm.test(\"Registration returns 201 Created\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\n//verify the response contains customer information\r\npm.test(\"Response contains customer ID and username\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response).to.have.property(\"customer_id\");\r\n    pm.expect(response).to.have.property(\"username\");\r\n});\r\n\r\n//verify the success message\r\npm.test(\"Account created successfully\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.message).to.eql(\r\n        \"Customer account created successfully.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"f_name\": \"Test\",\n    \"l_name\": \"Customer\",\n    \"date_of_birth\": \"2000-01-15\",\n    \"username\": \"{{testUsername}}\",\n    \"password\": \"{{testPassword}}\",\n    \"confirm_password\": \"{{testPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register/",
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "Description: Registers a new customer after validating their personal information, username, password, and minimum age requirement. Passwords are hashed before storage.\n\nRequired Parameters:\n\n1. f_name\n    \n2. l_name\n    \n3. date_of_birth\n    \n4. username\n    \n5. password\n    \n6. confirm_password\n\nRun once per testUsername. Change testUsername to a new unique value before registering again."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Account - Invalid (Missing fields)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Missing fields returns 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Required field errors are returned\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data).to.have.property(\"f_name\");\r\n    pm.expect(data).to.have.property(\"l_name\");\r\n    pm.expect(data).to.have.property(\"date_of_birth\");\r\n    pm.expect(data).to.have.property(\"username\");\r\n    pm.expect(data).to.have.property(\"password\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register/",
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that customer registration rejects requests that omit required information."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Account - Invalid (Under 18)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//verify that an underage customer cannot register\r\npm.test(\"Underage registration returns 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\n//verify the date of birth validation message\r\npm.test(\"Underage registration is rejected\", function () {\r\n    const response = pm.response.json();\r\n\r\n    pm.expect(response.date_of_birth).to.include(\r\n        \"You must be at least 18 years old to create an account.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"f_name\": \"Test\",\n    \"l_name\": \"Customer\",\n    \"date_of_birth\": \"2015-01-15\",\n    \"username\": \"{{testUsername}}\",\n    \"password\": \"{{testPassword}}\",\n    \"confirm_password\": \"{{testPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register/",
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that customers younger than 18 cannot create an account."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Account - Invalid (Duplicate Username)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Duplicate username returns 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Duplicate username is rejected\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.username).to.include(\r\n        \"Username is already taken.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"f_name\": \"Duplicate\",\n    \"l_name\": \"Customer\",\n    \"date_of_birth\": \"2000-01-15\",\n    \"username\": \"{{testUsername}}\",\n    \"password\": \"{{testPassword}}\",\n    \"confirm_password\": \"{{testPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register/",
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that a new customer cannot register with a username already stored in the database.\n\nRequires the same testUsername to have been registered successfully first."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Account - Invalid (Password Mismatch)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//verify that mismatched passwords are rejected\r\npm.test(\"Password mismatch returns 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\n//verify the correct validation message\r\npm.test(\"Password mismatch validation works\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.confirm_password).to.include(\r\n        \"Passwords do not match.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"f_name\": \"Test\",\n    \"l_name\": \"Customer\",\n    \"date_of_birth\": \"2000-01-15\",\n    \"username\": \"{{testUsername}}\",\n    \"password\": \"{{testPassword}}\",\n    \"confirm_password\": \"{{wrongPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/register/",
+              "path": [
+                "api",
+                "register",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that a new customer cannot register when the confirm_password and password fields do not match."
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Valid",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login returns 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Customer login is successful\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.message).to.eql(\r\n        \"Customer logged in successfully.\"\r\n    );\r\n\r\n    pm.expect(data).to.have.property(\"customer_id\");\r\n    pm.expect(data.username).to.eql(pm.variables.get(\"testUsername\"));\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{testUsername}}\",\n    \"password\": \"{{testPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login/",
+              "path": [
+                "api",
+                "login",
+                ""
+              ]
+            },
+            "description": "Description: Authenticates a customer using their username and password. On success, Django creates a session and stores the customer's ID.\n\nRequired Parameters:\n\nusername\n\npassword"
+          },
+          "response": []
+        },
+        {
+          "name": "Login - Invalid (Incorrect Parameters)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Invalid login returns 400\", function () {\r\n    pm.response.to.have.status(400);\r\n});\r\n\r\npm.test(\"Login returns validation errors\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data).to.be.an(\"object\");\r\n    pm.expect(Object.keys(data).length).to.be.above(0);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"nonexistent_{{testUsername}}\",\n    \"password\": \"{{wrongPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login/",
+              "path": [
+                "api",
+                "login",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that incorrect customer credentials do not create an authenticated session.\n\nUses a deliberately nonexistent username derived from testUsername."
+          },
+          "response": []
+        },
+        {
+          "name": "Login Status - Authenticated",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Authenticated status returns 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Customer is authenticated\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.authenticated).to.eql(true);\r\n    pm.expect(data).to.have.property(\"customer_id\");\r\n    pm.expect(data).to.have.property(\"username\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login-status/",
+              "path": [
+                "api",
+                "login-status",
+                ""
+              ]
+            },
+            "description": "Description: Checks whether the current customer has an active Django session and returns their ID and username.\n\nParameters: NONE"
+          },
+          "response": []
+        },
+        {
+          "name": "Login Status - Unauthenticated",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Unauthenticated status returns 401\", function () {\r\n    pm.response.to.have.status(401);\r\n});\r\n\r\npm.test(\"Customer is not authenticated\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.authenticated).to.eql(false);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/login-status/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login-status",
+                ""
+              ]
+            },
+            "description": "Description: Verifies that a customer without an active session cannot access authenticated customer information."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Logout returns 200 OK\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\npm.test(\"Customer logged out successfully\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.message).to.eql(\r\n        \"Customer logged out successfully.\"\r\n    );\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/logout/",
+              "path": [
+                "api",
                 "logout",
                 ""
               ]

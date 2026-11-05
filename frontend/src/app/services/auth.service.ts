@@ -32,14 +32,23 @@ export class AuthService {
   }
 
   //method for handling account creation
-  createAccount(username: string, password: string, firstName: string, lastName: string, dateOfBirth: string): Observable<any> {
-    //send a POST request to the backend API with the customer's account details
-    return this.http.post(`${this.apiUrl}/create-account/`, {
+  createAccount(
+    username: string,
+    password: string,
+    confirmPassword: string,
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string
+  ): Observable<any> {
+
+    //send a POST request to the backend API
+    return this.http.post(`${this.apiUrl}/register/`, {
       username: username,
       password: password,
-      firstName: firstName,
-      lastName: lastName,
-      dateOfBirth: dateOfBirth
+      confirm_password: confirmPassword,
+      f_name: firstName,
+      l_name: lastName,
+      date_of_birth: dateOfBirth
     });
   }
 

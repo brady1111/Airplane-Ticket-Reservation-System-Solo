@@ -35,7 +35,6 @@ def customer_count(request):
     })
 #end of customer_count function
 
-#P1.1 - Create an Account
 #API endpoint to check if a customer is logged in
 @api_view(['GET'])
 def check_login_status(request):

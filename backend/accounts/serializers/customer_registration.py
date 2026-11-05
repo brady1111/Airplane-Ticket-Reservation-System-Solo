@@ -20,6 +20,11 @@ class CustomerRegistrationSerializer(serializers.Serializer):
         trim_whitespace=False
     )
 
+    confirm_password = serializers.CharField(
+        write_only=True,
+        trim_whitespace=False
+    )
+
     #function to validate the date of birth field
     def validate_date_of_birth(self, value):
         today = date.today() #store today's date
@@ -80,10 +85,25 @@ class CustomerRegistrationSerializer(serializers.Serializer):
         return value
     #end of validate_password function
 
+    #function to validate that password and confirm password match
+    def validate_confirm_password(self, value):
+        #retrieve the original password from the request
+        password = self.initial_data.get('password')
+
+        #check if both passwords match
+        if password != value:
+            raise serializers.ValidationError(
+                "Passwords do not match."
+            )
+
+        #return the validated confirm password
+        return value
+    #end of validate_confirm_password function
+
     #function to validate name
     def validate_name(self, value):
         value = value.strip() #remove leading and trailing whitespace from the name
-
+        
         #check if the name is empty
         if not value:
             raise serializers.ValidationError("Name cannot be empty.")
@@ -101,6 +121,9 @@ class CustomerRegistrationSerializer(serializers.Serializer):
 
     #function to create a new customer instance
     def create(self, validated_data):
-        validated_data["password"] = make_password(validated_data["password"])
+        #remove confirm_password because it is not stored in the database
+        validated_data.pop('confirm_password')
+        #hash the customer's password before saving
+        validated_data['password'] = make_password(validated_data['password'])
         return Customer.objects.create(**validated_data)
     #end of create function

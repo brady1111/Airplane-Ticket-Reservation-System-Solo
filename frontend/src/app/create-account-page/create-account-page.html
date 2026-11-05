@@ -76,7 +76,9 @@
             >
             <p class="error-message">{{ confirmPasswordError }}</p> 
 
-            <p class="error-message">{{ errorMessage() }}</p>
+            @if (errorMessage) {
+                <p class="error-message">{{ errorMessage }}</p>
+            }
 
             <button type="submit">Create Account</button>
         </form>
