@@ -1,7 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-
 
 @Component({
   imports: [RouterLink],
@@ -11,19 +10,23 @@ import { AuthService } from '../services/auth.service';
 })
 export class CustomerHomePage {
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   //controls whether the logout popup is displayed
-  showLogoutPopup = signal(false);
+  showLogoutPopup: boolean = false;
 
   //method to display the logout popup
   openLogoutPopup(): void {
-    this.showLogoutPopup.set(true);
+    this.showLogoutPopup = true;
   }
 
   //method to close the logout popup
   closeLogoutPopup(): void {
-    this.showLogoutPopup.set(false);
+    this.showLogoutPopup = false;
   }
 
   //method to confirm the customer's logout
@@ -35,7 +38,7 @@ export class CustomerHomePage {
         //close the popup
         this.closeLogoutPopup();
 
-        //navigate to the user-home-page
+        //navigate to the user home page
         this.router.navigate(['/user-home-page']);
       },
       error: (error) => {

@@ -13,7 +13,7 @@ export class ReservationService {
 
   //method to retrieve the logged-in customer's reservations
   getCustomerReservations(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/`, {
+    return this.http.get(`${this.apiUrl}/my-reservations/`, {
       withCredentials: true
     });
   }

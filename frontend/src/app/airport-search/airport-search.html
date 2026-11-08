@@ -1,0 +1,33 @@
+<div class="airport-search-container">
+
+  <label>{{ label }}</label>
+
+  <input
+    type="text"
+    [value]="searchText"
+    placeholder="Search by city, airport, or code"
+    autocomplete="off"
+    (input)="searchAirports($any($event.target).value)"
+    (focus)="searchText && !selectedAirport ? showDropdown = true : null"
+    (blur)="closeDropdown()"
+  >
+
+  @if (showDropdown) {
+    <div class="airport-dropdown">
+      @for (airport of filteredAirports; track airport.code) {
+        <button
+          type="button"
+          class="airport-option"
+          (mousedown)="$event.preventDefault(); selectAirport(airport)"
+        >
+          <span>{{ airport.city }} ({{ airport.code }})</span>
+          <small>{{ airport.name }}</small>
+        </button>
+      }
+
+      @if (filteredAirports.length === 0) {
+        <p class="no-airports">No matching airports found.</p>
+      }
+    </div>
+  }
+</div>

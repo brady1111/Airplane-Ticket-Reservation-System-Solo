@@ -5,25 +5,108 @@
 
     <main>
         <div class="account-buttons">
-            <button class="login-button" routerLink="/login">Log In</button>
-            <p>Don't have an account? <a routerLink="/create-account">Sign Up</a></p>
+            <button class="login-button" routerLink="/login">
+                Log In
+            </button>
+
+            <p>
+                Don't have an account?
+                <a routerLink="/create-account">Sign Up</a>
+            </p>
         </div>
 
         <h2>Find a Flight</h2>
 
-        <div class="search-flight">
-            <label for="departure">Departure Airport:</label>
-            <input type="text" id="departure" name="departure" placeholder="Search for an airport">
+        <form class="search-flight" (submit)="searchFlights(); $event.preventDefault()">
 
-            <label for="arrival">Arrival Airport:</label>
-            <input type="text" id="arrival" name="arrival" placeholder="Search for an airport">
+            <app-airport-search
+                label="Departure Airport:"
+                (airportSelected)="departureAirport = $event">
+            </app-airport-search>
+
+            <app-airport-search
+                label="Arrival Airport:"
+                (airportSelected)="arrivalAirport = $event">
+            </app-airport-search>
 
             <label for="date">Departure Date:</label>
-            <input type="date" id="date" name="date">
+            <input
+                type="date"
+                id="date"
+                name="date"
+                [max]="maxDepartureDate"
+                [value]="departureDate"
+                (input)="departureDate = $any($event.target).value"
+            >
 
-            <button>Search Flights</button>
-        </div>
+            <button type="submit" [disabled]="searchingFlights">
+                @if (searchingFlights) {
+                    Searching...
+                } @else {
+                    Search Flights
+                }
+            </button>
+        </form>
+
+        @if (searchError) {
+            <p class="error-message">{{ searchError }}</p>
+        }
 
         <h2>Available Flights:</h2>
+
+        @if (searchingFlights) {
+            <p>Searching for available flights...</p>
+        }
+        @else if (hasSearched && !searchError && flights.length === 0) {
+            <p>No available flights were found for your search.</p>
+        }
+        @else if (flights.length > 0) {
+
+            <div class="flight-results">
+                @for (flight of flights; track flight.offer_id) {
+
+                    <div class="flight-card">
+
+                        <h3>{{ flight.airline }}</h3>
+
+                        <p>
+                            <strong>Flight Number:</strong>
+                            {{ flight.flight_number }}
+                        </p>
+
+                        <p>
+                            <strong>Route:</strong>
+                            {{ flight.origin }} → {{ flight.destination }}
+                        </p>
+
+                        <p>
+                            <strong>Departure:</strong>
+                            {{ flight.departure_time }}
+                        </p>
+
+                        <p>
+                            <strong>Arrival:</strong>
+                            {{ flight.arrival_time }}
+                        </p>
+
+                        <p>
+                            <strong>Duration:</strong>
+                            {{ flight.duration }}
+                        </p>
+
+                        <p>
+                            <strong>Stops:</strong>
+                            {{ flight.stops }}
+                        </p>
+
+                        <p>
+                            <strong>Price:</strong>
+                            {{ flight.price }}
+                        </p>
+
+                    </div>
+                }
+            </div>
+        }
     </main>
 </div>
