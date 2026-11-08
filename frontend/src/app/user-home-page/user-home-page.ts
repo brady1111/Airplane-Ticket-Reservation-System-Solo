@@ -2,9 +2,10 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FlightService, Flight } from '../services/flights.service';
 import { AirportSearch } from '../airport-search/airport-search';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  imports: [RouterLink, AirportSearch],
+  imports: [RouterLink, AirportSearch, DatePipe],
   selector: 'app-user-home-page',
   styleUrl: './user-home-page.css',
   templateUrl: './user-home-page.html',
@@ -43,7 +44,29 @@ export class UserHomePage {
       String(maxDate.getDate()).padStart(2, '0');
   }
 
-  maxDepartureDate: string = this.getMaxDepartureDate();
+  getMinDepartureDate(): string {
+    const today = new Date();
+
+    return today.getFullYear() + '-' +
+      String(today.getMonth() + 1).padStart(2, '0') + '-' +
+      String(today.getDate()).padStart(2, '0');
+  }
+
+  minDepartureDate: string = this.getMinDepartureDate();
+    maxDepartureDate: string = this.getMaxDepartureDate();
+
+    formatDuration(duration: string): string {
+    const match = duration.match(/^PT(?:(\d+)H)?(?:(\d+)M)?$/);
+
+    if (!match) {
+      return duration;
+    }
+
+    const hours = Number(match[1] || 0);
+    const minutes = Number(match[2] || 0);
+
+    return `${hours}h ${minutes}m`;
+  }
 
   //method to search for available flights
   searchFlights(): void {

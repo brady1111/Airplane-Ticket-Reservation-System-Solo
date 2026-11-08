@@ -1,11 +1,19 @@
+
 <div class="customer-home-page-container">
 
+    <!-- Navigation Bar -->
     <header class="navbar">
         <h1>Airplane Ticket Reservation</h1>
 
         <nav>
-            <a routerLink="/reservations-page">My Reservations</a>
-            <button type="button" class="logout-button" (click)="openLogoutPopup()">
+            <a routerLink="/reservations-page">
+                My Reservations
+            </a>
+
+            <button
+                type="button"
+                class="logout-button"
+                (click)="openLogoutPopup()">
                 Log Out
             </button>
         </nav>
@@ -13,43 +21,57 @@
 
     <main class="page-content">
 
+        <!-- Flight Search Section -->
         <section class="content-card">
             <h2>Find a Flight</h2>
 
-            <form class="search-flight">
+            <form
+                class="search-flight"
+                (submit)="searchFlights(); $event.preventDefault()">
 
+                <!-- Departure Airport -->
                 <div class="form-group">
-                    <label for="departure">Departure Airport</label>
-                    <input
-                        type="text"
-                        id="departure"
-                        name="departure"
-                        placeholder="Enter departure airport"
-                    >
+                    <app-airport-search
+                        label="Departure Airport"
+                        (airportSelected)="departureAirport = $event">
+                    </app-airport-search>
                 </div>
 
+                <!-- Arrival Airport -->
                 <div class="form-group">
-                    <label for="arrival">Arrival Airport</label>
-                    <input
-                        type="text"
-                        id="arrival"
-                        name="arrival"
-                        placeholder="Enter arrival airport"
-                    >
+                    <app-airport-search
+                        label="Arrival Airport"
+                        (airportSelected)="arrivalAirport = $event">
+                    </app-airport-search>
                 </div>
 
+                <!-- Departure Date -->
                 <div class="form-group">
                     <label for="date">Departure Date</label>
+
                     <input
                         type="date"
                         id="date"
                         name="date"
-                    >
+                        [min]="minDepartureDate"
+                        [max]="maxDepartureDate"
+                        [value]="departureDate"
+                        (input)="departureDate = $any($event.target).value"
+                        required>
                 </div>
 
+                <!-- Number of Passengers -->
                 <div class="form-group">
-                    <label for="passengers">Number of Passengers</label>
-                    <select id="passengers" name="passengers">
+                    <label for="passengers">
+                        Number of Passengers
+                    </label>
+
+                    <select
+                        id="passengers"
+                        name="passengers"
+                        [value]="passengers"
+                        (change)="passengers = +$any($event.target).value">
+
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -58,32 +80,139 @@
                     </select>
                 </div>
 
-                <button type="button" class="primary-button">
-                    Search Flights
+                <!-- Search Flights Button -->
+                <button
+                    type="submit"
+                    class="primary-button"
+                    [disabled]="searchingFlights">
+
+                    @if (searchingFlights) {
+                        Searching...
+                    } @else {
+                        Search Flights
+                    }
                 </button>
 
             </form>
+
+            <!-- Search Error -->
+            @if (searchError) {
+                <p class="error-message">
+                    {{ searchError }}
+                </p>
+            }
+
+        </section>
+
+        <!-- Available Flights Section -->
+        <section class="content-card">
+            <h2>Available Flights</h2>
+
+            @if (searchingFlights) {
+                <p>Searching for available flights...</p>
+            }
+
+            @else if (hasSearched && !searchError && flights.length === 0) {
+                <p>No available flights were found for your search.</p>
+            }
+
+            @else if (flights.length > 0) {
+
+                <div class="flight-results">
+
+                    @for (flight of flights; track flight.offer_id) {
+
+                        <div class="flight-card">
+
+                            <h3>{{ flight.airline }}</h3>
+
+                            <p>
+                                <strong>Flight Number:</strong>
+                                {{ flight.flight_number }}
+                            </p>
+
+                            <p>
+                                <strong>Route:</strong>
+                                {{ flight.origin }}
+                                →
+                                {{ flight.destination }}
+                            </p>
+
+                            <p>
+                                <strong>Departure:</strong>
+                                {{ flight.departure_time | date:'medium' }}
+                            </p>
+
+                            <p>
+                                <strong>Arrival:</strong>
+                                {{ flight.arrival_time | date:'medium' }}
+                            </p>
+
+                            <p>
+                                <strong>Duration:</strong>
+                                {{ formatDuration(flight.duration) }}
+                            </p>
+
+                            <p>
+                                <strong>Stops:</strong>
+                                {{ flight.stops }}
+                            </p>
+
+                            <p>
+                                <strong>Price:</strong>
+                                {{ flight.price }}
+                            </p>
+
+                        </div>
+
+                    }
+
+                </div>
+            }
+
+            @else if (!hasSearched && !searchError) {
+                <p>Search for flights using the form above.</p>
+            }
+
         </section>
 
         <!-- Logout Popup -->
         @if (showLogoutPopup) {
+
             <div class="logout-overlay">
                 <div class="logout-popup">
+
                     <h2>Goodbye!</h2>
 
-                    <p>You have chosen to log out of your account.</p>
-                    <p>Thank you for using Airplane Ticket Reservation!</p>
+                    <p>
+                        You have chosen to log out of your account.
+                    </p>
+
+                    <p>
+                        Thank you for using Airplane Ticket Reservation!
+                    </p>
 
                     <div class="logout-popup-buttons">
-                        <button type="button" class="logout-confirm-button" (click)="confirmLogout()">
+
+                        <button
+                            type="button"
+                            class="logout-confirm-button"
+                            (click)="confirmLogout()">
                             OK
                         </button>
-                        <button type="button" class="logout-return-button" (click)="closeLogoutPopup()">
+
+                        <button
+                            type="button"
+                            class="logout-return-button"
+                            (click)="closeLogoutPopup()">
                             Return
                         </button>
+
                     </div>
                 </div>
             </div>
         }
+
     </main>
 </div>
+

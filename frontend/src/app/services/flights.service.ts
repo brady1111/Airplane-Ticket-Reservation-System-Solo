@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, timeout } from 'rxjs';
 
 //represents a flight returned by Django
 export interface Flight {
@@ -32,19 +32,22 @@ export class FlightService {
 
   //search for available flights using the Django/Duffel API
   searchFlights(
-    departureAirport: string,
-    arrivalAirport: string,
-    departureDate: string
-  ): Observable<FlightSearchResponse> {
+  departureAirport: string,
+  arrivalAirport: string,
+  departureDate: string,
+  passengers: number = 1
+): Observable<FlightSearchResponse> {
 
-    return this.http.post<FlightSearchResponse>(
-      `${this.apiUrl}/search/`,
-      {
-        departure_airport: departureAirport,
-        arrival_airport: arrivalAirport,
-        departure_date: departureDate,
-        passengers: 1
-      }
-    );
-  }
+  return this.http.post<FlightSearchResponse>(
+    `${this.apiUrl}/search/`,
+    {
+      departure_airport: departureAirport,
+      arrival_airport: arrivalAirport,
+      departure_date: departureDate,
+      passengers: passengers
+    }
+  ).pipe( //set a timeout of 20 seconds for the flight search request
+    timeout(20000)
+  );
+}
 }

@@ -179,4 +179,41 @@
     background-color: #ccc;
 }
 
+.form-group app-airport-search {
+    display: block;
+    width: 100%;
+}
 
+.flight-results {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.flight-card {
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.flight-card h3 {
+    margin-top: 0;
+}
+
+.flight-card p {
+    margin: 8px 0;
+}
+
+.error-message {
+    color: #c62828;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.primary-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
