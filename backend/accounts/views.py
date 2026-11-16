@@ -67,7 +67,10 @@ def check_login_status(request):
     return Response({
         'authenticated': True,
         'customer_id': customer.customer_id,
-        'username': customer.username
+        'username': customer.username,
+        'f_name': customer.f_name,
+        'l_name': customer.l_name,
+        'date_of_birth': customer.date_of_birth
     },
         status=status.HTTP_200_OK)
 #end of check_login_status function

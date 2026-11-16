@@ -19,6 +19,8 @@ class Reservation(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     created_at = models.DateTimeField(db_column='created_at')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    status = models.CharField(max_length=20, default='Confirmed')
 
     class Meta:
         db_table = 'reservations'
@@ -54,6 +56,7 @@ class Passenger(models.Model):
     l_name = models.CharField(max_length=100)
     date_of_birth = models.DateField()
     passenger_type = models.CharField(max_length=50)
+    is_main_passenger = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'passengers'
@@ -77,4 +80,23 @@ class Ticket(models.Model):
 
     class Meta:
         db_table = 'tickets'
+        managed = False
+
+#model for tracking occupied seats on each flight
+class FlightSeatAssignment(models.Model):
+    assignment_id = models.AutoField(primary_key=True)
+    airline_name = models.CharField(max_length=100)
+    flight_number = models.CharField(max_length=20)
+    departure_airport = models.CharField(max_length=20)
+    arrival_airport = models.CharField(max_length=20)
+    departure_time = models.DateTimeField()
+    seat_number = models.CharField(max_length=10)
+    ticket = models.OneToOneField(
+        Ticket,
+        on_delete=models.DO_NOTHING,
+        db_column='ticket_id'
+    )
+
+    class Meta:
+        db_table = 'flight_seat_assignments'
         managed = False

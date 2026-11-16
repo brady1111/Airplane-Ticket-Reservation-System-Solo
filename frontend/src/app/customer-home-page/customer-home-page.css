@@ -217,3 +217,321 @@
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+.book-flight-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.book-flight-button:hover {
+    background-color: lightgray;
+}
+
+.flight-popup-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    z-index: 1100;
+}
+
+.flight-popup {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 450px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: left;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.flight-popup h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.flight-popup h3 {
+    margin-bottom: 15px;
+}
+
+.flight-popup p {
+    margin: 12px 0;
+    line-height: 1.5;
+}
+
+.flight-popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.flight-continue-button,
+.flight-return-button {
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.flight-continue-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.flight-continue-button:hover {
+    background-color: lightgray;
+}
+
+.flight-return-button {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+}
+
+.flight-return-button:hover {
+    background-color: #ccc;
+}
+
+.passenger-form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fafafa;
+}
+
+.passenger-form h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.passenger-form .form-group {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.passenger-form input {
+    width: 100%;
+}
+
+.main-passenger-note {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.account-info-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.account-info-checkbox input {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+}
+
+
+.seat-passenger-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.seat-passenger-button {
+    padding: 12px;
+    background-color: white;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.seat-passenger-button:hover {
+    background-color: #eee;
+}
+
+.seat-passenger-button.active-passenger {
+    background-color: #e3f2fd;
+    border-color: #1976d2;
+}
+
+.seat-instructions {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.seat-legend > span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.seat-legend-box {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+}
+
+.seat-legend-box.available {
+    background-color: white;
+}
+
+.seat-legend-box.selected {
+    background-color: #1976d2;
+}
+
+.seat-legend-box.occupied {
+    background-color: #aaa;
+}
+
+.airplane-seat-map {
+    width: fit-content;
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px 15px;
+    border: 2px solid #ccc;
+    border-radius: 45px 45px 12px 12px;
+    background-color: #fafafa;
+}
+
+.airplane-front {
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.seat-column-labels,
+.seat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 35px) 28px repeat(3, 35px);
+    gap: 5px;
+    align-items: center;
+    justify-items: center;
+    margin-bottom: 7px;
+}
+
+.seat-column-labels {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.airplane-seat {
+    width: 35px;
+    height: 35px;
+    background-color: white;
+    color: black;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.airplane-seat:hover:not(:disabled) {
+    background-color: #d6eaff;
+}
+
+.airplane-seat.seat-selected {
+    background-color: #1976d2;
+    color: white;
+    border-color: #1565c0;
+}
+
+.airplane-seat.seat-occupied {
+    background-color: #dc3545;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.airplane-seat.seat-occupied:disabled {
+    background-color: #dc3545;
+    color: white;
+    opacity: 0.8;
+}
+
+.seat-row-number {
+    grid-column: 4;
+    grid-row: 1;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+}
+
+
+.review-section {
+    margin: 20px 0;
+    padding: 18px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fafafa;
+}
+
+.review-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.review-section p {
+    margin: 10px 0;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.review-passenger {
+    padding: 12px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.review-passenger:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.review-passenger h4 {
+    margin: 0 0 10px;
+    font-size: 15px;
+}
+
+

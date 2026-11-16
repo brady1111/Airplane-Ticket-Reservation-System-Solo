@@ -1,18 +1,11 @@
 
 <div class="customer-home-page-container">
-
-    <!-- Navigation Bar -->
     <header class="navbar">
         <h1>Airplane Ticket Reservation</h1>
 
         <nav>
-            <a routerLink="/reservations-page">
-                My Reservations
-            </a>
-
-            <button
-                type="button"
-                class="logout-button"
+            <a routerLink="/reservations-page">My Reservations</a>
+            <button type="button" class="logout-button"
                 (click)="openLogoutPopup()">
                 Log Out
             </button>
@@ -21,15 +14,12 @@
 
     <main class="page-content">
 
-        <!-- Flight Search Section -->
         <section class="content-card">
             <h2>Find a Flight</h2>
 
-            <form
-                class="search-flight"
+            <form class="search-flight"
                 (submit)="searchFlights(); $event.preventDefault()">
 
-                <!-- Departure Airport -->
                 <div class="form-group">
                     <app-airport-search
                         label="Departure Airport"
@@ -37,7 +27,6 @@
                     </app-airport-search>
                 </div>
 
-                <!-- Arrival Airport -->
                 <div class="form-group">
                     <app-airport-search
                         label="Arrival Airport"
@@ -45,12 +34,9 @@
                     </app-airport-search>
                 </div>
 
-                <!-- Departure Date -->
                 <div class="form-group">
                     <label for="date">Departure Date</label>
-
-                    <input
-                        type="date"
+                    <input type="date"
                         id="date"
                         name="date"
                         [min]="minDepartureDate"
@@ -60,18 +46,12 @@
                         required>
                 </div>
 
-                <!-- Number of Passengers -->
                 <div class="form-group">
-                    <label for="passengers">
-                        Number of Passengers
-                    </label>
-
-                    <select
-                        id="passengers"
+                    <label for="passengers">Number of Passengers</label>
+                    <select id="passengers"
                         name="passengers"
                         [value]="passengers"
                         (change)="passengers = +$any($event.target).value">
-
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>
@@ -80,139 +60,381 @@
                     </select>
                 </div>
 
-                <!-- Search Flights Button -->
-                <button
-                    type="submit"
+                <button type="submit"
                     class="primary-button"
                     [disabled]="searchingFlights">
-
                     @if (searchingFlights) {
                         Searching...
                     } @else {
                         Search Flights
                     }
                 </button>
-
             </form>
 
-            <!-- Search Error -->
             @if (searchError) {
-                <p class="error-message">
-                    {{ searchError }}
-                </p>
+                <p class="error-message">{{ searchError }}</p>
             }
-
         </section>
 
-        <!-- Available Flights Section -->
         <section class="content-card">
             <h2>Available Flights</h2>
 
             @if (searchingFlights) {
                 <p>Searching for available flights...</p>
-            }
-
-            @else if (hasSearched && !searchError && flights.length === 0) {
+            } @else if (hasSearched && !searchError && flights.length === 0) {
                 <p>No available flights were found for your search.</p>
-            }
-
-            @else if (flights.length > 0) {
-
+            } @else if (flights.length > 0) {
                 <div class="flight-results">
-
                     @for (flight of flights; track flight.offer_id) {
-
                         <div class="flight-card">
-
                             <h3>{{ flight.airline }}</h3>
 
-                            <p>
-                                <strong>Flight Number:</strong>
-                                {{ flight.flight_number }}
-                            </p>
+                            <p><strong>Flight Number:</strong> {{ flight.flight_number }}</p>
+                            <p><strong>Route:</strong> {{ flight.origin }} → {{ flight.destination }}</p>
+                            <p><strong>Departure:</strong> {{ flight.departure_time | date:'medium' }}</p>
+                            <p><strong>Arrival:</strong> {{ flight.arrival_time | date:'medium' }}</p>
+                            <p><strong>Duration:</strong> {{ formatDuration(flight.duration) }}</p>
+                            <p><strong>Stops:</strong> {{ flight.stops }}</p>
+                            <p><strong>Price:</strong> {{ flight.price }}</p>
 
-                            <p>
-                                <strong>Route:</strong>
-                                {{ flight.origin }}
-                                →
-                                {{ flight.destination }}
-                            </p>
-
-                            <p>
-                                <strong>Departure:</strong>
-                                {{ flight.departure_time | date:'medium' }}
-                            </p>
-
-                            <p>
-                                <strong>Arrival:</strong>
-                                {{ flight.arrival_time | date:'medium' }}
-                            </p>
-
-                            <p>
-                                <strong>Duration:</strong>
-                                {{ formatDuration(flight.duration) }}
-                            </p>
-
-                            <p>
-                                <strong>Stops:</strong>
-                                {{ flight.stops }}
-                            </p>
-
-                            <p>
-                                <strong>Price:</strong>
-                                {{ flight.price }}
-                            </p>
-
+                            <button type="button"
+                                class="book-flight-button"
+                                (click)="bookFlight(flight)">
+                                Book Flight
+                            </button>
                         </div>
-
                     }
-
                 </div>
-            }
-
-            @else if (!hasSearched && !searchError) {
+            } @else if (!hasSearched && !searchError) {
                 <p>Search for flights using the form above.</p>
             }
-
         </section>
 
-        <!-- Logout Popup -->
         @if (showLogoutPopup) {
-
             <div class="logout-overlay">
                 <div class="logout-popup">
-
                     <h2>Goodbye!</h2>
-
-                    <p>
-                        You have chosen to log out of your account.
-                    </p>
-
-                    <p>
-                        Thank you for using Airplane Ticket Reservation!
-                    </p>
+                    <p>You have chosen to log out of your account.</p>
+                    <p>Thank you for using Airplane Ticket Reservation!</p>
 
                     <div class="logout-popup-buttons">
-
-                        <button
-                            type="button"
+                        <button type="button"
                             class="logout-confirm-button"
                             (click)="confirmLogout()">
                             OK
                         </button>
 
-                        <button
-                            type="button"
+                        <button type="button"
                             class="logout-return-button"
                             (click)="closeLogoutPopup()">
                             Return
                         </button>
-
                     </div>
+                </div>
+            </div>
+        }
+
+        @if (selectedFlight) {
+            <div class="flight-popup-overlay">
+                <div class="flight-popup"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="booking-popup-title">
+
+                    <!-- STEP 1: FLIGHT DETAILS -->
+                    @if (bookingStep === 'flight') {
+                        <h2 id="booking-popup-title">Flight Details</h2>
+                        <h3>{{ selectedFlight.airline }}</h3>
+
+                        <p><strong>Flight Number:</strong> {{ selectedFlight.flight_number }}</p>
+                        <p><strong>Departure Airport:</strong> {{ selectedFlight.origin }}</p>
+                        <p><strong>Arrival Airport:</strong> {{ selectedFlight.destination }}</p>
+                        <p><strong>Departure:</strong> {{ selectedFlight.departure_time | date:'medium' }}</p>
+                        <p><strong>Arrival:</strong> {{ selectedFlight.arrival_time | date:'medium' }}</p>
+                        <p><strong>Duration:</strong> {{ formatDuration(selectedFlight.duration) }}</p>
+                        <p><strong>Stops:</strong> {{ selectedFlight.stops }}</p>
+                        <p><strong>Number of Passengers:</strong> {{ passengers }}</p>
+                        <p><strong>Price:</strong> {{ selectedFlight.price }}</p>
+
+                        <div class="flight-popup-buttons">
+                            <button type="button"
+                                class="flight-continue-button"
+                                (click)="continueBooking()">
+                                Continue
+                            </button>
+
+                            <button type="button"
+                                class="flight-return-button"
+                                (click)="closeFlightPopup()">
+                                Return
+                            </button>
+                        </div>
+                    }
+
+                    <!-- STEP 2: PASSENGER INFORMATION -->
+                    @if (bookingStep === 'passengers') {
+                        <h2 id="booking-popup-title">Passenger Information</h2>
+                        <p>Please enter the information for each passenger.</p>
+
+                        @for (passenger of bookingPassengers; track $index) {
+                            <div class="passenger-form">
+
+                                @if ($index === 0) {
+                                    <h3>Passenger 1 - Main Passenger</h3>
+
+                                    <p class="main-passenger-note">
+                                        Passenger 1 will be designated as the main passenger for this reservation.
+                                        Please ensure their information is correct.
+                                    </p>
+
+                                    <label class="account-info-checkbox">
+                                        <input type="checkbox"
+                                            [(ngModel)]="useAccountInfo"
+                                            [ngModelOptions]="{standalone: true}"
+                                            (ngModelChange)="toggleAccountInfo()">
+                                        Use my account information
+                                    </label>
+                                } @else {
+                                    <h3>Passenger {{ $index + 1 }}</h3>
+                                }
+
+                                <div class="form-group">
+                                    <label [for]="'first-name-' + $index">First Name</label>
+                                    <input type="text"
+                                        [id]="'first-name-' + $index"
+                                        [name]="'first-name-' + $index"
+                                        [(ngModel)]="passenger.firstName"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label [for]="'last-name-' + $index">Last Name</label>
+                                    <input type="text"
+                                        [id]="'last-name-' + $index"
+                                        [name]="'last-name-' + $index"
+                                        [(ngModel)]="passenger.lastName"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label [for]="'dob-' + $index">Date of Birth</label>
+                                    <input type="date"
+                                        [id]="'dob-' + $index"
+                                        [name]="'dob-' + $index"
+                                        [max]="minDepartureDate"
+                                        [(ngModel)]="passenger.dateOfBirth"
+                                        required>
+                                </div>
+                            </div>
+                        }
+
+                        @if (bookingError) {
+                            <p class="error-message">{{ bookingError }}</p>
+                        }
+
+                        <div class="flight-popup-buttons">
+                            <button type="button"
+                                class="flight-continue-button"
+                                (click)="continueToSeats()">
+                                Continue to Seats
+                            </button>
+
+                            <button type="button"
+                                class="flight-return-button"
+                                (click)="bookingStep = 'flight'">
+                                Return
+                            </button>
+                        </div>
+                    }
+
+                    <!-- STEP 3: SEAT SELECTION -->
+                    @if (bookingStep === 'seats') {
+                        <h2 id="booking-popup-title">Select Seats</h2>
+                        <p>Please select one seat for each passenger.</p>
+
+                        @if (loadingOccupiedSeats) {
+                            <p>Checking seat availability...</p>
+                        } @else if (!seatAvailabilityLoaded) {
+                            <p class="error-message">
+                                Unable to load seat availability.
+                            </p>
+
+                            <button type="button"
+                                class="flight-return-button"
+                                (click)="loadOccupiedSeats()">
+                                Retry Seat Availability
+                            </button>
+                        }
+
+                        <div class="seat-passenger-list">
+                            @for (passenger of bookingPassengers; track $index) {
+                                <button type="button"
+                                    class="seat-passenger-button"
+                                    [class.active-passenger]="activePassengerIndex === $index"
+                                    (click)="selectPassenger($index)">
+
+                                    Passenger {{ $index + 1 }}: {{ passenger.firstName }}
+
+                                    @if (passenger.seatNumber) {
+                                        - Seat {{ passenger.seatNumber }}
+                                    } @else {
+                                        - No Seat
+                                    }
+                                </button>
+                            }
+                        </div>
+
+                        <p class="seat-instructions">
+                            Selecting seat for:
+                            <strong>
+                                {{ bookingPassengers[activePassengerIndex].firstName }}
+                                {{ bookingPassengers[activePassengerIndex].lastName }}
+                            </strong>
+                        </p>
+
+                        <div class="seat-legend">
+                            <span>
+                                <span class="seat-legend-box available"></span>
+                                Available
+                            </span>
+
+                            <span>
+                                <span class="seat-legend-box selected"></span>
+                                Selected
+                            </span>
+
+                            <span>
+                                <span class="seat-legend-box occupied"></span>
+                                Occupied
+                            </span>
+                        </div>
+
+                        <div class="airplane-seat-map">
+                            <p class="airplane-front">Front of Aircraft</p>
+
+                            <div class="seat-column-labels">
+                                <span>A</span>
+                                <span>B</span>
+                                <span>C</span>
+                                <span class="seat-aisle"></span>
+                                <span>D</span>
+                                <span>E</span>
+                                <span>F</span>
+                            </div>
+
+                            @for (row of seatRows; track row) {
+                                <div class="seat-row">
+
+                                    @for (letter of seatLetters; track letter) {
+
+                                        @if (letter === 'D') {
+                                            <span class="seat-row-number">
+                                                {{ row }}
+                                            </span>
+                                        }
+
+                                        <button type="button"
+                                            class="airplane-seat"
+                                            [class.seat-selected]="isSeatSelected(row + letter)"
+                                            [class.seat-occupied]="isSeatOccupied(row + letter)"
+                                            [disabled]="loadingOccupiedSeats || !seatAvailabilityLoaded || isSeatOccupied(row + letter)"
+                                            [attr.aria-label]="'Seat ' + row + letter"
+                                            (click)="selectSeat(row + letter)">
+
+                                            {{ letter }}
+                                        </button>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        @if (bookingError) {
+                            <p class="error-message">{{ bookingError }}</p>
+                        }
+
+                        <div class="flight-popup-buttons">
+                            <button type="button"
+                                class="flight-continue-button"
+                                [disabled]="loadingOccupiedSeats || !seatAvailabilityLoaded"
+                                (click)="continueToReview()">
+                                Continue to Review
+                            </button>
+
+                            <button type="button"
+                                class="flight-return-button"
+                                (click)="bookingStep = 'passengers'">
+                                Return
+                            </button>
+                        </div>
+                    }
+
+                    <!-- STEP 4: REVIEW RESERVATION -->
+                    @if (bookingStep === 'review') {
+                        <h2 id="booking-popup-title">Review Reservation</h2>
+                        <p>Please review your reservation details before confirming.</p>
+
+                        <div class="review-section">
+                            <h3>Flight Information</h3>
+
+                            <p><strong>Airline:</strong> {{ selectedFlight.airline }}</p>
+                            <p><strong>Flight Number:</strong> {{ selectedFlight.flight_number }}</p>
+                            <p><strong>Departure Airport:</strong> {{ selectedFlight.origin }}</p>
+                            <p><strong>Arrival Airport:</strong> {{ selectedFlight.destination }}</p>
+                            <p><strong>Departure:</strong> {{ selectedFlight.departure_time | date:'medium' }}</p>
+                            <p><strong>Arrival:</strong> {{ selectedFlight.arrival_time | date:'medium' }}</p>
+                            <p><strong>Duration:</strong> {{ formatDuration(selectedFlight.duration) }}</p>
+                            <p><strong>Stops:</strong> {{ selectedFlight.stops }}</p>
+                        </div>
+
+                        <div class="review-section">
+                            <h3>Passenger Information</h3>
+
+                            @for (passenger of bookingPassengers; track $index) {
+                                <div class="review-passenger">
+
+                                    <h4>
+                                        Passenger {{ $index + 1 }}
+                                        @if ($index === 0) {
+                                            - Main Passenger
+                                        }
+                                    </h4>
+
+                                    <p><strong>Name:</strong> {{ passenger.firstName }} {{ passenger.lastName }}</p>
+                                    <p><strong>Date of Birth:</strong> {{ passenger.dateOfBirth | date:'mediumDate' }}</p>
+                                    <p><strong>Seat:</strong> {{ passenger.seatNumber }}</p>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="review-section">
+                            <h3>Reservation Summary</h3>
+
+                            <p><strong>Number of Passengers:</strong> {{ bookingPassengers.length }}</p>
+                            <p><strong>Total Price:</strong> {{ selectedFlight.price }}</p>
+                        </div>
+
+                        @if (bookingError) {
+                            <p class="error-message">{{ bookingError }}</p>
+                        }
+
+                        <div class="flight-popup-buttons">
+                            <button type="button"
+                                class="flight-continue-button"
+                                (click)="confirmReservation()">
+                                Confirm Reservation
+                            </button>
+
+                            <button type="button"
+                                class="flight-return-button"
+                                (click)="bookingStep = 'seats'">
+                                Return
+                            </button>
+                        </div>
+                    }
+
                 </div>
             </div>
         }
 
     </main>
 </div>
-

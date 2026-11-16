@@ -1,3 +1,4 @@
+
 <div class="user-home-page-container">
     <header>
         <h1>Airplane Ticket Reservation</h1>
@@ -5,139 +6,110 @@
     <main>
         <div class="account-buttons">
             <a routerLink="/login">
-                <button type="button" class="login-button">
-                    Log In
-                </button>
+                <button type="button" class="login-button">Log In</button>
             </a>
-            <p>
-                Don't have an account?
-                <a routerLink="/create-account-page">Sign Up</a>
-            </p>
+            <p>Don't have an account? <a routerLink="/create-account">Sign Up</a></p>
         </div>
 
         <h2>Find a Flight</h2>
 
-        <form
-            class="search-flight"
-            (submit)="searchFlights(); $event.preventDefault()">
-
-            <app-airport-search
-                label="Departure Airport"
+        <form class="search-flight" (submit)="searchFlights(); $event.preventDefault()">
+            <app-airport-search label="Departure Airport"
                 (airportSelected)="departureAirport = $event">
             </app-airport-search>
 
-            <app-airport-search
-                label="Arrival Airport"
+            <app-airport-search label="Arrival Airport"
                 (airportSelected)="arrivalAirport = $event">
             </app-airport-search>
 
-            <label for="departure-date">
-                Departure Date
-            </label>
-
-            <input
-                type="date"
-                id="departure-date"
-                name="departure-date"
-                [min]="minDepartureDate"
-                [max]="maxDepartureDate"
+            <label for="departure-date">Departure Date</label>
+            <input type="date" id="departure-date" name="departure-date"
+                [min]="minDepartureDate" [max]="maxDepartureDate"
                 [value]="departureDate"
-                (input)="departureDate = $any($event.target).value"
-                required>
+                (input)="departureDate = $any($event.target).value" required>
 
-            <button
-                type="submit"
-                [disabled]="searchingFlights">
+            <label for="passengers">Number of Passengers</label>
+            <select id="passengers" name="passengers" [value]="passengers"
+                (change)="updatePassengers($any($event.target).value)">
+                <option value="1">1 Passenger</option>
+                <option value="2">2 Passengers</option>
+                <option value="3">3 Passengers</option>
+                <option value="4">4 Passengers</option>
+                <option value="5">5 Passengers</option>
+            </select>
 
+            <button type="submit" [disabled]="searchingFlights">
                 @if (searchingFlights) {
                     Searching...
                 } @else {
                     Search Flights
                 }
-
             </button>
-
         </form>
 
         @if (searchError) {
-            <p class="error-message">
-                {{ searchError }}
-            </p>
+            <p class="error-message">{{ searchError }}</p>
         }
 
         <section class="available-flights">
-
             <h2>Available Flights</h2>
 
             @if (searchingFlights) {
                 <p>Searching for available flights...</p>
-            }
-
-            @else if (hasSearched && !searchError && flights.length === 0) {
+            } @else if (hasSearched && !searchError && flights.length === 0) {
                 <p>No available flights were found for your search.</p>
-            }
-
-            @else if (flights.length > 0) {
-
+            } @else if (flights.length > 0) {
                 <div class="flight-results">
-
                     @for (flight of flights; track flight.offer_id) {
-
                         <div class="flight-card">
-
                             <h3>{{ flight.airline }}</h3>
+                            <p><strong>Flight Number:</strong> {{ flight.flight_number }}</p>
+                            <p><strong>Route:</strong> {{ flight.origin }} → {{ flight.destination }}</p>
+                            <p><strong>Departure:</strong> {{ flight.departure_time | date:'medium' }}</p>
+                            <p><strong>Arrival:</strong> {{ flight.arrival_time | date:'medium' }}</p>
+                            <p><strong>Duration:</strong> {{ formatDuration(flight.duration) }}</p>
+                            <p><strong>Stops:</strong> {{ flight.stops }}</p>
+                            <p><strong>Price:</strong> {{ flight.price }}</p>
 
-                            <p>
-                                <strong>Flight Number:</strong>
-                                {{ flight.flight_number }}
-                            </p>
-
-                            <p>
-                                <strong>Route:</strong>
-                                {{ flight.origin }}
-                                →
-                                {{ flight.destination }}
-                            </p>
-
-                            <p>
-                                <strong>Departure:</strong>
-                                {{ flight.departure_time | date:'medium' }}
-                            </p>
-
-                            <p>
-                                <strong>Arrival:</strong>
-                                {{ flight.arrival_time | date:'medium' }}
-                            </p>
-
-                            <p>
-                                <strong>Duration:</strong>
-                                {{ formatDuration(flight.duration) }}
-                            </p>
-
-                            <p>
-                                <strong>Stops:</strong>
-                                {{ flight.stops }}
-                            </p>
-
-                            <p>
-                                <strong>Price:</strong>
-                                {{ flight.price }}
-                            </p>
-
+                            <button type="button" class="book-flight-button"
+                                (click)="bookFlight(flight)">
+                                Book Flight
+                            </button>
                         </div>
-
                     }
-
                 </div>
-
-            }
-
-            @else if (!hasSearched && !searchError) {
+            } @else if (!hasSearched && !searchError) {
                 <p>Search for flights using the form above.</p>
             }
-
         </section>
-
     </main>
-
 </div>
+
+@if (showBookingPopup) {
+    <div class="booking-popup-overlay">
+        <div class="booking-popup" role="dialog" aria-modal="true"
+            aria-labelledby="booking-popup-title">
+            <h2 id="booking-popup-title">Continue Your Reservation</h2>
+
+            <p>To continue booking your selected flight, please log in or create an account.</p>
+
+            <div class="booking-popup-buttons">
+                <button type="button" class="booking-login-button"
+                    (click)="continueToLogin()">
+                    Log In
+                </button>
+
+                <button type="button" class="booking-create-button"
+                    (click)="continueToCreateAccount()">
+                    Create Account
+                </button>
+
+                <button type="button" class="booking-return-button"
+                    (click)="closeBookingPopup()">
+                    Return to Flights
+                </button>
+            </div>
+        </div>
+    </div>
+}
+

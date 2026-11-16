@@ -5,11 +5,16 @@
 
         <nav>
             <a routerLink="/customer-home-page">Return to Home</a>
-            <button type="button" class="logout-button" (click)="openLogoutPopup()">Log Out</button>
+            <button type="button"
+                    class="logout-button"
+                    (click)="openLogoutPopup()">
+                Log Out
+            </button>
         </nav>
     </header>
 
     <main class="page-content">
+
         <section class="content-card">
             <h2>My Reservations</h2>
 
@@ -24,45 +29,335 @@
             }
             @else {
                 <div class="reservations-list">
+
                     @for (reservation of reservations; track reservation.reservation_id) {
                         <div class="reservation-card">
+
                             <h3>{{ reservation.airline_name }}</h3>
 
-                            <p><strong>Flight:</strong> {{ reservation.flight_number }}</p>
-                            <p><strong>From:</strong> {{ reservation.departure_airport }}</p>
-                            <p><strong>To:</strong> {{ reservation.arrival_airport }}</p>
-                            <p><strong>Departure:</strong> {{ reservation.departure_date }}</p>
-                            <p><strong>Booking Reference:</strong> {{ reservation.booking_reference }}</p>
+                            <p><strong>Flight:</strong>
+                                {{ reservation.flight_number }}
+                            </p>
+
+                            <p><strong>From:</strong>
+                                {{ reservation.departure_airport }}
+                            </p>
+
+                            <p><strong>To:</strong>
+                                {{ reservation.arrival_airport }}
+                            </p>
+
+                            <p><strong>Departure:</strong>
+                                {{ reservation.departure_date }}
+                            </p>
+
+                            <p><strong>Booking Reference:</strong>
+                                {{ reservation.booking_reference }}
+                            </p>
+
+                            <p><strong>Total Price:</strong>
+                                {{ reservation.total_price }}
+                            </p>
+
+                            <p><strong>Status:</strong>
+                                {{ reservation.status }}
+                            </p>
+
+                            <button type="button"
+                                    class="view-tickets-button"
+                                    (click)="openReservationDetails(reservation.reservation_id)">
+                                View Tickets
+                            </button>
+
+                            @if (canModifyReservation(reservation)) {
+
+                                <button type="button"
+                                        class="view-tickets-button"
+                                        (click)="openEditPopup(reservation)">
+                                    Edit Reservation
+                                </button>
+
+                                <button type="button"
+                                        class="cancel-reservation-button"
+                                        (click)="openCancelPopup(reservation)">
+                                    Cancel Reservation
+                                </button>
+
+                            }
+                            @else if (reservation.status === 'Confirmed') {
+                                <p>
+                                    This reservation cannot be edited or canceled
+                                    within 7 days of departure.
+                                </p>
+                            }
+
                         </div>
                     }
+
                 </div>
             }
         </section>
 
-        <!-- Logout confirmation popup -->
-        @if (showLogoutPopup) {
-            <div class="logout-overlay">
-                <div class="logout-popup">
-                <h2>Goodbye!</h2>
+        <!-- View Tickets popup -->
+        @if (showDetailsPopup) {
+            <div class="details-overlay">
+                <div class="details-popup">
 
-                <p>You have chosen to log out of your account.</p>
-                <p>Thank you for using Airplane Ticket Reservation!</p>
+                    <h2>My Tickets</h2>
 
-                <div class="logout-popup-buttons">
-                    <button type="button"
-                            class="logout-confirm-button"
-                            (click)="confirmLogout()">
-                    OK
-                    </button>
+                    @if (loadingDetails) {
+                        <p>Loading tickets...</p>
+                    }
+                    @else if (detailsError) {
+                        <p class="error-message">{{ detailsError }}</p>
+                    }
+                    @else if (selectedReservation) {
+
+                        <h3>Flight Information</h3>
+
+                        <p><strong>Airline:</strong>
+                            {{ selectedReservation.reservation.airline_name }}
+                        </p>
+
+                        <p><strong>Flight:</strong>
+                            {{ selectedReservation.reservation.flight_number }}
+                        </p>
+
+                        <p><strong>From:</strong>
+                            {{ selectedReservation.reservation.departure_airport }}
+                        </p>
+
+                        <p><strong>To:</strong>
+                            {{ selectedReservation.reservation.arrival_airport }}
+                        </p>
+
+                        <p><strong>Departure:</strong>
+                            {{ selectedReservation.reservation.departure_time }}
+                        </p>
+
+                        <p><strong>Arrival:</strong>
+                            {{ selectedReservation.reservation.arrival_time }}
+                        </p>
+
+                        <p><strong>Booking Reference:</strong>
+                            {{ selectedReservation.reservation.booking_reference }}
+                        </p>
+
+                        <p><strong>Total Price:</strong>
+                            {{ selectedReservation.reservation.total_price }}
+                        </p>
+
+                        <p><strong>Status:</strong>
+                            {{ selectedReservation.reservation.status }}
+                        </p>
+
+                        <h3>Passengers and Tickets</h3>
+
+                        @for (passenger of selectedReservation.passengers; track passenger.passenger_id) {
+                            <div class="passenger-details">
+
+                                <h4>Passenger {{ $index + 1 }}</h4>
+
+                                <p><strong>Name:</strong>
+                                    {{ passenger.first_name }}
+                                    {{ passenger.last_name }}
+                                </p>
+
+                                <p><strong>Date of Birth:</strong>
+                                    {{ passenger.date_of_birth }}
+                                </p>
+
+                                <p><strong>Passenger Type:</strong>
+                                    {{ passenger.passenger_type }}
+                                </p>
+
+                                <p><strong>Seat:</strong>
+                                    {{ passenger.seat_number }}
+                                </p>
+
+                                <p><strong>Ticket Number:</strong>
+                                    {{ passenger.ticket_number }}
+                                </p>
+
+                            </div>
+                        }
+                    }
 
                     <button type="button"
                             class="logout-return-button"
-                            (click)="closeLogoutPopup()">
-                    Return
+                            (click)="closeReservationDetails()">
+                        Close
                     </button>
-                </div>
+
                 </div>
             </div>
         }
+
+        <!-- Edit Reservation popup -->
+        @if (showEditPopup) {
+            <div class="details-overlay">
+                <div class="details-popup">
+
+                    <h2>Edit Reservation</h2>
+
+                    @if (reservationToEdit) {
+                        <p>
+                            <strong>Booking Reference:</strong>
+                            {{ reservationToEdit.booking_reference }}
+                        </p>
+                    }
+
+                    @if (editError) {
+                        <p class="error-message">{{ editError }}</p>
+                    }
+
+                    @if (loadingEditPassengers) {
+                        <p>Loading passenger information...</p>
+                    }
+
+                    @for (passenger of editPassengers; track passenger.passenger_id) {
+                        <div class="passenger-details">
+
+                            <h3>Passenger {{ $index + 1 }}</h3>
+
+                            <label [for]="'first-name-' + passenger.passenger_id">
+                                First Name
+                            </label>
+                            <input
+                                [id]="'first-name-' + passenger.passenger_id"
+                                type="text"
+                                [(ngModel)]="passenger.first_name"
+                                maxlength="100"
+                            />
+
+                            <label [for]="'last-name-' + passenger.passenger_id">
+                                Last Name
+                            </label>
+                            <input
+                                [id]="'last-name-' + passenger.passenger_id"
+                                type="text"
+                                [(ngModel)]="passenger.last_name"
+                                maxlength="100"
+                            />
+
+                            <label [for]="'dob-' + passenger.passenger_id">
+                                Date of Birth
+                            </label>
+                            <input
+                                [id]="'dob-' + passenger.passenger_id"
+                                type="date"
+                                [(ngModel)]="passenger.date_of_birth"
+                            />
+
+                            <label [for]="'seat-' + passenger.passenger_id">
+                                Seat Number
+                            </label>
+                            <select
+                                [id]="'seat-' + passenger.passenger_id"
+                                [(ngModel)]="passenger.seat_number">
+
+                                @for (row of seatRows; track row) {
+                                    @for (letter of seatLetters; track letter) {
+                                        <option [value]="row + letter">
+                                            {{ row }}{{ letter }}
+                                        </option>
+                                    }
+                                }
+
+                            </select>
+
+                        </div>
+                    }
+
+                    <div class="logout-popup-buttons">
+
+                        <button type="button"
+                                class="logout-confirm-button"
+                                [disabled]="editingReservation || loadingEditPassengers || editPassengers.length === 0"
+                                (click)="saveReservationChanges()">
+                            {{ editingReservation ? 'Saving...' : 'Save Changes' }}
+                        </button>
+
+                        <button type="button"
+                                class="logout-return-button"
+                                [disabled]="editingReservation"
+                                (click)="closeEditPopup()">
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
+        <!-- Cancel Reservation popup -->
+        @if (showCancelPopup && reservationToCancel) {
+            <div class="logout-overlay">
+                <div class="logout-popup">
+
+                    <h2>Cancel Reservation?</h2>
+
+                    <p>Are you sure you want to cancel this reservation?</p>
+
+                    <p>
+                        <strong>Booking Reference:</strong>
+                        {{ reservationToCancel.booking_reference }}
+                    </p>
+
+                    @if (cancelError) {
+                        <p class="error-message">{{ cancelError }}</p>
+                    }
+
+                    <div class="logout-popup-buttons">
+
+                        <button type="button"
+                                class="logout-confirm-button"
+                                [disabled]="cancellingReservation"
+                                (click)="confirmCancellation()">
+                            {{ cancellingReservation ? 'Cancelling...' : 'Confirm Cancellation' }}
+                        </button>
+
+                        <button type="button"
+                                class="logout-return-button"
+                                [disabled]="cancellingReservation"
+                                (click)="closeCancelPopup()">
+                            Return
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Logout popup -->
+        @if (showLogoutPopup) {
+            <div class="logout-overlay">
+                <div class="logout-popup">
+
+                    <h2>Goodbye!</h2>
+
+                    <p>You have chosen to log out of your account.</p>
+                    <p>Thank you for using Airplane Ticket Reservation!</p>
+
+                    <div class="logout-popup-buttons">
+
+                        <button type="button"
+                                class="logout-confirm-button"
+                                (click)="confirmLogout()">
+                            OK
+                        </button>
+
+                        <button type="button"
+                                class="logout-return-button"
+                                (click)="closeLogoutPopup()">
+                            Return
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        }
+
     </main>
 </div>

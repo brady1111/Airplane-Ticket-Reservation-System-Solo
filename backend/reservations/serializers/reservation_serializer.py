@@ -1,3 +1,4 @@
+
 from rest_framework import serializers
 from ..models import Reservation
 
@@ -15,5 +16,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             'departure_date',
             'departure_time',
             'arrival_time',
-            'created_at'
-        ] 
+            'created_at',
+            'total_price',
+            'status'
+        ]
