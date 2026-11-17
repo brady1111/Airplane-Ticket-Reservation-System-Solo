@@ -1,8 +1,8 @@
-
 import logging
 import requests
 
 from datetime import timedelta
+from decimal import Decimal, InvalidOperation
 
 from django.db import transaction, IntegrityError
 from django.utils import timezone
@@ -169,7 +169,7 @@ def edit_reservation(request, reservation_id):
             }
 
             #verify every passenger belongs to this reservation
-            if submitted_ids != existing_ids:
+            if not submitted_ids.issubset(existing_ids):
                 return Response(
                     {
                         'message':
@@ -195,9 +195,18 @@ def edit_reservation(request, reservation_id):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            #remove previous seat assignments
+            removed_ids = existing_ids - submitted_ids
+
             FlightSeatAssignment.objects.filter(
                 ticket__reservation=reservation
+            ).delete()
+
+            for passenger_id in removed_ids:
+                tickets[passenger_id].delete()
+
+            Passenger.objects.filter(
+                reservation=reservation,
+                passenger_id__in=removed_ids
             ).delete()
 
             passenger_lookup = {
@@ -239,6 +248,17 @@ def edit_reservation(request, reservation_id):
                     seat_number=passenger_data['seat_number'],
                     ticket=ticket
                 )
+
+            if removed_ids and not any(
+                passenger.is_main_passenger
+                for passenger in existing_passengers
+                if passenger.passenger_id in submitted_ids
+            ):
+                new_main = min(submitted_ids)
+                Passenger.objects.filter(
+                    reservation=reservation,
+                    passenger_id=new_main
+                ).update(is_main_passenger=True)
 
     except IntegrityError:
         logger.exception(
@@ -497,3 +517,93 @@ def cancel_reservation(request, reservation_id):
         {'message': 'Reservation canceled successfully.'},
         status=status.HTTP_200_OK
     )
+
+@api_view(['PUT'])
+def change_flight(request, reservation_id):
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        return Response({'message': 'Customer is not logged in.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    from .serializers.change_flight_serializer import ChangeFlightSerializer
+    serializer = ChangeFlightSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    offer_id = serializer.validated_data['offer_id']
+    submitted = serializer.validated_data['passengers']
+
+    try:
+        flight = get_flight_offer(offer_id)
+        slices = flight.get('slices', [])
+        if len(slices) != 1 or len(slices[0].get('segments', [])) != 1:
+            return Response({'message': 'Only direct flights are supported.'}, status=status.HTTP_400_BAD_REQUEST)
+        if len(flight.get('passengers', [])) != len(submitted):
+            return Response({'message': 'Offer passenger count does not match reservation.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        segment = slices[0]['segments'][0]
+        departure_airport = segment['origin']['iata_code']
+        arrival_airport = segment['destination']['iata_code']
+        departure_time = parse_flight_time(segment['departing_at'], departure_airport)
+        arrival_time = parse_flight_time(segment['arriving_at'], arrival_airport)
+        price = Decimal(flight['total_amount'])
+        if price < 0 or not price.is_finite():
+            raise ValueError('Invalid flight price')
+        airline = flight['owner']['name']
+        flight_number = str(segment['marketing_carrier_flight_number'])
+    except (requests.RequestException, KeyError, TypeError, ValueError, InvalidOperation, IndexError):
+        logger.exception('Unable to validate replacement offer')
+        return Response({'message': 'Unable to verify replacement flight. Search again.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if departure_time <= timezone.now() + timedelta(days=7):
+        return Response({'message': 'Replacement flight must depart more than seven days from now.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        with transaction.atomic():
+            reservation = Reservation.objects.select_for_update().filter(
+                reservation_id=reservation_id,
+                customerreservation__customer_id=customer_id
+            ).first()
+            if reservation is None:
+                return Response({'message': 'Reservation not found.'}, status=status.HTTP_404_NOT_FOUND)
+            if reservation.status != 'Confirmed' or reservation.departure_time <= timezone.now() + timedelta(days=7):
+                return Response({'message': 'Reservation cannot be changed within seven days of departure.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            tickets = list(Ticket.objects.select_for_update().filter(reservation=reservation))
+            passenger_ids = set(Passenger.objects.filter(reservation=reservation).values_list('passenger_id', flat=True))
+            submitted_ids = {p['passenger_id'] for p in submitted}
+            if not tickets or len(tickets) != len(submitted) or {t.passenger_id for t in tickets} != passenger_ids or submitted_ids != passenger_ids:
+                return Response({'message': 'Passenger or ticket information does not match the reservation.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            FlightSeatAssignment.objects.filter(ticket__reservation=reservation).delete()
+
+            reservation.airline_name = airline
+            reservation.flight_number = flight_number
+            reservation.departure_airport = departure_airport
+            reservation.arrival_airport = arrival_airport
+            reservation.departure_date = departure_time.date()
+            reservation.departure_time = departure_time
+            reservation.arrival_time = arrival_time
+            reservation.total_price = price
+            reservation.save(update_fields=[
+                'airline_name', 'flight_number', 'departure_airport', 'arrival_airport',
+                'departure_date', 'departure_time', 'arrival_time', 'total_price'
+            ])
+
+            seat_by_id = {p['passenger_id']: p['seat_number'] for p in submitted}
+            for ticket in tickets:
+                ticket.seat_number = seat_by_id[ticket.passenger_id]
+                ticket.save(update_fields=['seat_number'])
+                FlightSeatAssignment.objects.create(
+                    airline_name=airline,
+                    flight_number=flight_number,
+                    departure_airport=departure_airport,
+                    arrival_airport=arrival_airport,
+                    departure_time=departure_time,
+                    seat_number=ticket.seat_number,
+                    ticket=ticket
+                )
+    except IntegrityError:
+        logger.exception('Seat conflict during flight change for reservation %s', reservation_id)
+        return Response({'message': 'A selected seat is unavailable or there was a database conflict.'}, status=status.HTTP_409_CONFLICT)
+
+    return Response({'message': 'Flight changed successfully.'}, status=status.HTTP_200_OK)

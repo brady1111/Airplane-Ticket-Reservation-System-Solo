@@ -13,7 +13,6 @@
     </header>
 
     <main class="page-content">
-
         <section class="content-card">
             <h2>Find a Flight</h2>
 
@@ -137,11 +136,11 @@
         @if (selectedFlight) {
             <div class="flight-popup-overlay">
                 <div class="flight-popup"
+                    [class.review-popup]="bookingStep === 'review'"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="booking-popup-title">
 
-                    <!-- STEP 1: FLIGHT DETAILS -->
                     @if (bookingStep === 'flight') {
                         <h2 id="booking-popup-title">Flight Details</h2>
                         <h3>{{ selectedFlight.airline }}</h3>
@@ -171,7 +170,6 @@
                         </div>
                     }
 
-                    <!-- STEP 2: PASSENGER INFORMATION -->
                     @if (bookingStep === 'passengers') {
                         <h2 id="booking-popup-title">Passenger Information</h2>
                         <p>Please enter the information for each passenger.</p>
@@ -247,7 +245,6 @@
                         </div>
                     }
 
-                    <!-- STEP 3: SEAT SELECTION -->
                     @if (bookingStep === 'seats') {
                         <h2 id="booking-popup-title">Select Seats</h2>
                         <p>Please select one seat for each passenger.</p>
@@ -368,73 +365,113 @@
                         </div>
                     }
 
-                    <!-- STEP 4: REVIEW RESERVATION -->
                     @if (bookingStep === 'review') {
                         <h2 id="booking-popup-title">Review Reservation</h2>
-                        <p>Please review your reservation details before confirming.</p>
 
-                        <div class="review-section">
-                            <h3>Flight Information</h3>
+                        <p class="review-description">
+                            Please review your details before confirming.
+                        </p>
 
-                            <p><strong>Airline:</strong> {{ selectedFlight.airline }}</p>
-                            <p><strong>Flight Number:</strong> {{ selectedFlight.flight_number }}</p>
-                            <p><strong>Departure Airport:</strong> {{ selectedFlight.origin }}</p>
-                            <p><strong>Arrival Airport:</strong> {{ selectedFlight.destination }}</p>
-                            <p><strong>Departure:</strong> {{ selectedFlight.departure_time | date:'medium' }}</p>
-                            <p><strong>Arrival:</strong> {{ selectedFlight.arrival_time | date:'medium' }}</p>
-                            <p><strong>Duration:</strong> {{ formatDuration(selectedFlight.duration) }}</p>
-                            <p><strong>Stops:</strong> {{ selectedFlight.stops }}</p>
-                        </div>
+                        <div class="review-details">
+                            <div class="review-flight-header">
+                                <h3>{{ selectedFlight.airline }}</h3>
+                                <span>Flight {{ selectedFlight.flight_number }}</span>
+                            </div>
 
-                        <div class="review-section">
-                            <h3>Passenger Information</h3>
+                            <div class="review-route">
+                                <strong>{{ selectedFlight.origin }}</strong>
+                                <span>→</span>
+                                <strong>{{ selectedFlight.destination }}</strong>
+                            </div>
 
-                            @for (passenger of bookingPassengers; track $index) {
-                                <div class="review-passenger">
-
-                                    <h4>
-                                        Passenger {{ $index + 1 }}
-                                        @if ($index === 0) {
-                                            - Main Passenger
-                                        }
-                                    </h4>
-
-                                    <p><strong>Name:</strong> {{ passenger.firstName }} {{ passenger.lastName }}</p>
-                                    <p><strong>Date of Birth:</strong> {{ passenger.dateOfBirth | date:'mediumDate' }}</p>
-                                    <p><strong>Seat:</strong> {{ passenger.seatNumber }}</p>
+                            <div class="review-flight-grid">
+                                <div>
+                                    <span class="review-label">Departure</span>
+                                    <strong>
+                                        {{ selectedFlight.departure_time | date:'medium' }}
+                                    </strong>
                                 </div>
-                            }
-                        </div>
 
-                        <div class="review-section">
-                            <h3>Reservation Summary</h3>
+                                <div>
+                                    <span class="review-label">Arrival</span>
+                                    <strong>
+                                        {{ selectedFlight.arrival_time | date:'medium' }}
+                                    </strong>
+                                </div>
 
-                            <p><strong>Number of Passengers:</strong> {{ bookingPassengers.length }}</p>
-                            <p><strong>Total Price:</strong> {{ selectedFlight.price }}</p>
+                                <div>
+                                    <span class="review-label">Duration</span>
+                                    <strong>
+                                        {{ formatDuration(selectedFlight.duration) }}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span class="review-label">Stops</span>
+                                    <strong>{{ selectedFlight.stops }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="review-passengers-section">
+                                <h3>
+                                    Passengers ({{ bookingPassengers.length }})
+                                </h3>
+
+                                @for (passenger of bookingPassengers; track $index) {
+                                    <div class="review-passenger">
+                                        <div class="review-passenger-info">
+                                            <strong>
+                                                {{ passenger.firstName }}
+                                                {{ passenger.lastName }}
+                                            </strong>
+
+                                            <span>
+                                                Passenger {{ $index + 1 }}
+                                                @if ($index === 0) {
+                                                    - Main
+                                                }
+                                            </span>
+
+                                            <span>
+                                                DOB:
+                                                {{ passenger.dateOfBirth | date:'mediumDate' }}
+                                            </span>
+                                        </div>
+
+                                        <div class="review-seat">
+                                            <span>Seat</span>
+                                            <strong>{{ passenger.seatNumber }}</strong>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="review-total">
+                                <strong>Total Price</strong>
+                                <strong>{{ selectedFlight.price }}</strong>
+                            </div>
                         </div>
 
                         @if (bookingError) {
                             <p class="error-message">{{ bookingError }}</p>
                         }
 
-                        <div class="flight-popup-buttons">
-                            <button type="button"
-                                class="flight-continue-button"
-                                (click)="confirmReservation()">
-                                Confirm Reservation
-                            </button>
-
+                        <div class="flight-popup-buttons review-actions">
                             <button type="button"
                                 class="flight-return-button"
                                 (click)="bookingStep = 'seats'">
                                 Return
                             </button>
+
+                            <button type="button"
+                                class="flight-continue-button"
+                                (click)="confirmReservation()">
+                                Confirm Reservation
+                            </button>
                         </div>
                     }
-
                 </div>
             </div>
         }
-
     </main>
 </div>

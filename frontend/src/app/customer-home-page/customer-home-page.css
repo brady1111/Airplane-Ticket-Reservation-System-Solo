@@ -1,3 +1,4 @@
+
 * {
     box-sizing: border-box;
 }
@@ -123,12 +124,14 @@
     background-color: lightgray;
 }
 
+.primary-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .logout-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
@@ -153,26 +156,26 @@
     margin-top: 25px;
 }
 
-.logout-confirm-button {
-    background-color: #c0392b;
-    color: white;
+.logout-confirm-button,
+.logout-return-button {
     border: none;
     padding: 10px 25px;
     border-radius: 6px;
     cursor: pointer;
+}
+
+.logout-confirm-button {
+    background-color: #c0392b;
+    color: white;
+}
+
+.logout-confirm-button:hover {
+    background-color: #a93226;
 }
 
 .logout-return-button {
     background-color: #e0e0e0;
     color: #333;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-.logout-confirm-button:hover {
-    background-color: #a93226;
 }
 
 .logout-return-button:hover {
@@ -213,11 +216,6 @@
     text-align: center;
 }
 
-.primary-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 .book-flight-button {
     margin-top: 15px;
     padding: 10px 20px;
@@ -236,8 +234,6 @@
 .flight-popup-overlay {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
@@ -260,8 +256,7 @@
 
 .flight-popup h2 {
     text-align: center;
-    margin-top: 0;
-    margin-bottom: 20px;
+    margin: 0 0 20px;
 }
 
 .flight-popup h3 {
@@ -292,9 +287,6 @@
     background-color: white;
     color: black;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 15px;
-    cursor: pointer;
 }
 
 .flight-continue-button:hover {
@@ -312,8 +304,7 @@
 }
 
 .passenger-form {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin: 20px 0;
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 6px;
@@ -321,8 +312,7 @@
 }
 
 .passenger-form h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
+    margin: 0 0 15px;
 }
 
 .passenger-form .form-group {
@@ -355,7 +345,6 @@
     min-height: auto;
     margin: 0;
 }
-
 
 .seat-passenger-list {
     display: flex;
@@ -477,16 +466,11 @@
     border-color: #1565c0;
 }
 
-.airplane-seat.seat-occupied {
-    background-color: #dc3545;
-    color: white;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-
+.airplane-seat.seat-occupied,
 .airplane-seat.seat-occupied:disabled {
     background-color: #dc3545;
     color: white;
+    cursor: not-allowed;
     opacity: 0.8;
 }
 
@@ -498,40 +482,197 @@
     color: #666;
 }
 
+.flight-popup.review-popup {
+    width: min(94vw, 500px);
+    max-height: 90vh;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: white;
+    border-radius: 12px;
+}
 
-.review-section {
-    margin: 20px 0;
-    padding: 18px;
+.review-popup h2 {
+    margin: 0 0 5px;
+    font-size: 22px;
+    text-align: center;
+}
+
+.review-popup .review-description {
+    margin: 0 0 16px;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.review-popup .review-details {
+    padding: 16px;
+    background-color: white;
     border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #fafafa;
+    border-radius: 8px;
+    overflow-y: auto;
+    min-height: 0;
 }
 
-.review-section h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 18px;
+.review-popup .review-flight-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
 }
 
-.review-section p {
-    margin: 10px 0;
-    line-height: 1.5;
-    font-size: 14px;
+.review-popup .review-flight-header h3 {
+    margin: 0;
+    font-size: 17px;
 }
 
-.review-passenger {
-    padding: 12px 0;
-    border-bottom: 1px solid #ddd;
+.review-popup .review-flight-header span {
+    font-size: 13px;
+    color: #666;
 }
 
-.review-passenger:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
+.review-popup .review-route {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 14px;
+    background-color: #f5f6f8;
+    border-radius: 7px;
+    font-size: 21px;
 }
 
-.review-passenger h4 {
-    margin: 0 0 10px;
+.review-popup .review-route span {
+    color: #888;
+}
+
+.review-popup .review-flight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.review-popup .review-flight-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.review-popup .review-label {
+    font-size: 12px;
+    color: #777;
+}
+
+.review-popup .review-flight-grid strong {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.review-popup .review-passengers-section {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.review-popup .review-passengers-section h3 {
+    margin: 0 0 8px;
     font-size: 15px;
 }
 
+.review-popup .review-passenger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.review-popup .review-passenger-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.review-popup .review-passenger-info strong {
+    font-size: 14px;
+}
+
+.review-popup .review-passenger-info span {
+    font-size: 12px;
+    color: #666;
+}
+
+.review-popup .review-seat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 8px 12px;
+    background-color: #f5f6f8;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.review-popup .review-seat span {
+    font-size: 11px;
+    color: #777;
+}
+
+.review-popup .review-seat strong {
+    font-size: 16px;
+}
+
+.review-popup .review-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.review-popup .review-total strong:last-child {
+    font-size: 20px;
+}
+
+.review-popup .review-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-shrink: 0;
+}
+
+.review-popup .review-actions button {
+    padding: 10px 18px;
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    .flight-popup.review-popup {
+        padding: 15px;
+    }
+
+    .review-popup .review-details {
+        padding: 12px;
+    }
+
+    .review-popup .review-flight-grid {
+        gap: 10px;
+    }
+
+    .review-popup .review-actions button {
+        padding: 9px 12px;
+        font-size: 13px;
+    }
+}
 
