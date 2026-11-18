@@ -1,0 +1,1 @@
+Software requirements and design documentation for the airplane ticket reservation system. Includes functional requirements, data flow diagrams, structure chart, database design, and algorithm design. This requirements specifications report was created during the analysis and design phase of the waterfall model.
